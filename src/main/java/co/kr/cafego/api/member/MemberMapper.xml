@@ -14,7 +14,7 @@
 			 		 , cm.join_flag		as joinFlag
 			 		 , cm.member_status as status
 			 		 , cmp.point		as point
-			 		 , (CASE WHEN cwi.dw_date >= TO_CHAR(SYSDATE+7, 'YYYYMMDD')
+			 		 , (CASE WHEN cwi.wd_date >= TO_CHAR(SYSDATE+7, 'YYYYMMDD')
 			 		 		 THEN 'Y'
 			 		 		 ELSE 'N'
 			 		 	END) 			as wdYn
