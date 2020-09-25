@@ -2,5 +2,52 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="co.kr.cafego.api.member.MemberMapper">
+
+	<!-- 회원 보유 포인트 정보 조회(예시) -->
+	<select id="getMemberPointInfo" parameterType="java.util.Map" resultType="co.kr.cafego.api.member.dto.MemberPointInfoDto">
+		SELECT member.*
+		  FROM (SELECT cm.member_num	as memberNum
+			 		 , cm.member_name	as memberName
+			 		 , cm.member_sex	as memberSex
+			 		 , cm.member_phone	as memberPhone
+			 		 , cm.member_email	as memberEmail
+			 		 , cm.join_flag		as joinFlag
+			 		 , cm.member_status as status
+			 		 , cmp.point		as point
+			 		 , (CASE WHEN cwi.dw_date >= TO_CHAR(SYSDATE+7, 'YYYYMMDD')
+			 		 		 THEN 'Y'
+			 		 		 ELSE 'N'
+			 		 	END) 			as wdYn
+				  FROM CAFE_MEMBER cm
+				     , CAFE_MEMBER_POINT cmp
+				     , CAFE_WITHDRAWAL_INFO cwi
+				 WHERE cm.member_num = cmp.member_num
+				   AND cm.member_num = cwi.member_num(+) 	 
+				   AND cm.member_email = #{email}
+				) member
+		 	WHERE member.wdYn = 'N'
+	</select>
 	
+	<!-- 회원 가입 -->
+	<insert id="memberJoin" parameterType="java.util.Map">
+		<selectKey resultType="java.lang.String" keyProperty="memberNum" order="BEFORE">
+			SELECT CAFE_MEMBER_MEMBER_NUM_SEQ.nextval FROM dual
+		</selectKey>
+		INSERT INTO CAFE_MEMBER(
+			  member_num
+			, member_name
+			, member_sex
+			, member_phone
+			, member_email
+			, member_status
+		)
+		VALUES(
+			  #{memberNum}
+			, #{memberName}
+			, #{memberSex}
+			, #{phone}
+			, #{email}
+			, 'O' 
+		)
+	</insert>
 </mapper>
