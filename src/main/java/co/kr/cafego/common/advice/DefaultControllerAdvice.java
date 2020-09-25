@@ -8,12 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.kr.cafego.common.util.ReturnObject;
 
-/**
- * TODO Insert type comment for DefaultControllerAdvice.
- *
- * @author sw.Lee
- * @version $Revision: 1.2 $
- */
 @ControllerAdvice
 @RestController
 public class DefaultControllerAdvice {

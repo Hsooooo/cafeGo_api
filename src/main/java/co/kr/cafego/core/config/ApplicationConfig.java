@@ -40,9 +40,6 @@ import co.kr.cafego.common.util.MessageUtil;
 import co.kr.cafego.common.util.ReturnObject;
 import co.kr.cafego.core.support.CustomDateFormatter;
 import co.kr.cafego.core.support.XssConverter;
-import net.ezens.common.env.EnvironmentWrapper;
-import net.ezens.common.trace.TraceConfig;
-import net.ezens.common.web.config.AbstractApplicationConfig;
 
 
 /**
@@ -55,9 +52,7 @@ import net.ezens.common.web.config.AbstractApplicationConfig;
 	"classpath:messages.properties",
 	"classpath:${spring.profiles.active:dev}/xoDefault.properties"
 })
-@Import({
-	TraceConfig.class,
-})
+
 @ImportResource({
 	"classpath:etc-config.xml",
 })

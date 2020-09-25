@@ -20,12 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import co.kr.cafego.common.util.ParamUtils;
-/**
- * TODO Insert type comment for CommonLogAspect.
- *
- * @author sw.Lee
- * @version $Revision: 1.2 $
- */
+
 @Component
 @Aspect
 public class CommonLogAspect {

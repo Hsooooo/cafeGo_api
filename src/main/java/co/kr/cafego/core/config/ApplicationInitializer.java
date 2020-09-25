@@ -4,8 +4,6 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import net.ezens.common.web.config.AbstractApplicationInitializer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -35,13 +33,13 @@ public class ApplicationInitializer extends AbstractApplicationInitializer {
 		CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
         
-        //HiddenHttpMethodFilter ë³´ë‹¤ ë¨¼ì? ?„ ?–¸?•œ?‹¤.
+        //HiddenHttpMethodFilter ë³´ë‹¤ ë¨¼ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½.
         MultipartFilter multipartFilter = new MultipartFilter();
         multipartFilter.setMultipartResolverBeanName("multipartResolver");
         
         HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
         
-        // ?¬ë¡œìŠ¤ ?‚¬?´?Š¸ ?•„?„°
+        // ?ï¿½ï¿½ë¡œìŠ¤ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½
         //XssFilter xssFilter = new XssFilter();
         
        return new Filter[] {

@@ -7,12 +7,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.time.FastDateFormat;
 
-/**
- * 날짜관련 공통 클래스
- * 
- * @author sw.Leefcomoare
- * @version $Revision: 1.5 $
- */
 public final class DateTime {
 	
 	/**

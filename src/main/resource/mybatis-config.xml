@@ -9,7 +9,7 @@
     </settings>
 
     <typeHandlers>
-		<typeHandler handler="net.ezens.common.data.YesNoBooleanTypeHandler" javaType="java.lang.Boolean" />
+		<typeHandler handler="co.kr.cafego.core.handler.YesNoBooleanTypeHandler" javaType="java.lang.Boolean" />
     </typeHandlers>
 
 </configuration>

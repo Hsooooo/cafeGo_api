@@ -1,16 +1,6 @@
 package co.kr.cafego.common.util;
 
-/**
- * @author FIC05186
- *
- */
-/**
- * @author FIC05186
- *
- */
 public final class DataCode {
-	
-	
 
 	/**
 	 * getCodeName

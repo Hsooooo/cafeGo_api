@@ -25,29 +25,17 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.ezens.starbucks.biz.util.TripleDes;
 
-/**
- * DataBase  ê´?? ¨?„¤? •
- * <p>
- * MSR - MSR DB
- * HP 	- ?™ˆ?˜?´ì§? DB
- * SALES - ?˜?—… DB (?†µ?˜)
- * XO - ?‚¬?´? Œ?˜¤?” DB
- * MSR_SALES - MSR+?˜?—…
- * </p>
- * @author Cha
- *
- */
 @Configuration
 @EnableTransactionManagement
 public class DatabaseConfig{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger("INFO");
 	
-	// ?š´?˜_DB:real, ê°œë°œ_DB:dev, ë¡œì»¬_DB:local
+	// ?ï¿½ï¿½?ï¿½ï¿½_DB:real, ê°œë°œ_DB:dev, ë¡œì»¬_DB:local
 //	private static String mode 	 =  SystemEnviroment.getActiveProfile();
 	
 	/*
-	 * PROVIDER_URL : ê°? ?„œë²„ì˜ JEUS_ADMIN_ADDRESS:JEUS_ADMIN_BASE_LISTEN_PORT ë¡? ?„¤? •
+	 * PROVIDER_URL : ï¿½? ?ï¿½ï¿½ë²„ì˜ JEUS_ADMIN_ADDRESS:JEUS_ADMIN_BASE_LISTEN_PORT ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
 	 * SECURITY_PRINCIPAL : JEUS_ADMIN ID
 	 * SECURITY_CREDENTIALS : JEUS_ADMIN PASSWORD
 	 */
@@ -89,7 +77,7 @@ public class DatabaseConfig{
 //	}	
 	
 	/**
-	 * ?™ˆ?˜?´ì§?_DB JNDI
+	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½?_DB JNDI
 	 */
 	@Bean(name="dataSourceHP")
 	public DataSource dataSourceHP(){
@@ -105,7 +93,7 @@ public class DatabaseConfig{
 	}
 	
 //	/**
-//	 * ?˜?—…? •ë³?_DB JNDI
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½?_DB JNDI
 //	 */
 //	@Bean(name="dataSourceSALES")
 //	public DataSource dataSourceSALES(){
@@ -121,7 +109,7 @@ public class DatabaseConfig{
 //	}
 	
 	/**
-	 * ?‚¬?´? Œ?˜¤?”_DB JNDI
+	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½_DB JNDI
 	 */
 	@Bean(name="dataSourceXO")
 	public DataSource dataSourceXO(){
@@ -137,8 +125,8 @@ public class DatabaseConfig{
 	}
 	
 //	/**
-//	 * ?˜?—…? •ë³?_DB JNDI
-//	 * ?™˜ë¶ˆì‹ ì²? ? •ë³´ìš©
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½?_DB JNDI
+//	 * ?ï¿½ï¿½ë¶ˆì‹ ï¿½? ?ï¿½ï¿½ë³´ìš©
 //	 */
 //	@Bean(name="dataSourceSCKSC")
 //	public DataSource dataSourceSCKSC(){
@@ -284,7 +272,7 @@ public class DatabaseConfig{
 //	}
 	
 //	/**
-//	 * ?™ˆ?˜?´ì§? TransactionManager
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? TransactionManager
 //	 * @param dataSourceHP
 //	 * @return
 //	 */
@@ -314,7 +302,7 @@ public class DatabaseConfig{
 //	}
 
 //	/**
-//	 * ?˜?—…? •ë³? TransactionManager
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? TransactionManager
 //	 * @param dataSourceSALES
 //	 * @return
 //	 */
@@ -324,7 +312,7 @@ public class DatabaseConfig{
 //	}
 //
 //	/**
-//	 * MSR-?™ˆ?˜?´ì§? TransactionManager
+//	 * MSR-?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? TransactionManager
 //	 * @param dataSourceMSR
 //	 * @param dataSourceSALES
 //	 * @return
@@ -335,7 +323,7 @@ public class DatabaseConfig{
 //	}
 	
 //	/**
-//	 * MSR-?˜?—…? •ë³? TransactionManager
+//	 * MSR-?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? TransactionManager
 //	 * @param dataSourceMSR
 //	 * @param dataSourceSALES
 //	 * @return
@@ -346,7 +334,7 @@ public class DatabaseConfig{
 //	}
 //	
 //	/**
-//	 * ?˜?—…? •ë³?(?™˜ë¶ˆì‹ ì²??š©) TransactionManager
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½?(?ï¿½ï¿½ë¶ˆì‹ ï¿½??ï¿½ï¿½) TransactionManager
 //	 * @param dataSourceSALES
 //	 * @return
 //	 */
@@ -356,7 +344,7 @@ public class DatabaseConfig{
 //	}
 //	
 //	/**
-//	 * MSR-?˜?—…? •ë³?(?™˜ë¶ˆì‹ ì²??š©) TransactionManager
+//	 * MSR-?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½?(?ï¿½ï¿½ë¶ˆì‹ ï¿½??ï¿½ï¿½) TransactionManager
 //	 * @param dataSourceMSR
 //	 * @param dataSourceSALES
 //	 * @return
@@ -418,7 +406,7 @@ public class DatabaseConfig{
 //	}
 	
 //	/**
-//	 * ?™ˆ?˜?´ì§? Mapper Scan
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? Mapper Scan
 //	 * package : co.kr.istarbucks.hp.**
 //	 * @return
 //	 */
@@ -432,7 +420,7 @@ public class DatabaseConfig{
 //	}
 	
 //	/**
-//	 * ?˜?—…? •ë³? Mapper Scan
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? Mapper Scan
 //	 * package : co.kr.istarbucks.sales.**
 //	 * @return
 //	 */
@@ -446,7 +434,7 @@ public class DatabaseConfig{
 //	}
 	
 //	/**
-//	 * ?˜?—…? •ë³? Mapper Scan
+//	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? Mapper Scan
 //	 * package : co.kr.istarbucks.scksc.**
 //	 * @return
 //	 */
@@ -460,7 +448,7 @@ public class DatabaseConfig{
 //	}
 	
 	/**
-	 * ?‚¬?´? Œ?˜¤?” Mapper Scan
+	 * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ Mapper Scan
 	 * package : co.kr.istarbucks.xo.**
 	 * @return
 	 */
