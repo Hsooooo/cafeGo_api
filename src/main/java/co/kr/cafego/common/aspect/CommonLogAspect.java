@@ -26,11 +26,8 @@ import co.kr.cafego.common.util.ParamUtils;
 public class CommonLogAspect {
 	private static final Logger LOGGER  = LoggerFactory.getLogger("INFO");
 	private static final Logger RLOGGER = LoggerFactory.getLogger("RESULT");
-	private static final Logger SLOGGER = LoggerFactory.getLogger("STOCK");
 	
-	private static final String STOCK_CHK = "stock";
-	
-	@Around("execution(* co.kr.istarbucks..*Controller.*(..))")
+	@Around("execution(* co.kr.cafego..*Controller.*(..))")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable{
 		Object obj = null;
 		HttpServletRequest request = getHttpServletRequest(joinPoint);
@@ -46,19 +43,12 @@ public class CommonLogAspect {
 			watch.start();
 
 			this.logPreWrite(request, pkgName);
-			if(StringUtils.equals(pkgName, STOCK_CHK)) {
-				SLOGGER.info("[{}] {}", className+":"+methodName, "########## START ##########");
-			}else {
-				LOGGER.info("[{}] {}", className+":"+methodName, "########## START ##########");
-			}
+			LOGGER.info("[{}] {}", className+":"+methodName, "########## START ##########");
 			
 			obj = joinPoint.proceed();
 		}finally{
-			if(StringUtils.equals(pkgName, STOCK_CHK)) {
-				SLOGGER.info("[{}] {}", className+":"+methodName, "########## END ##########");
-			}else {
-				LOGGER.info("[{}] {}", className+":"+methodName, "########## END ##########");
-			}
+			LOGGER.info("[{}] {}", className+":"+methodName, "########## END ##########");
+			
 			watch.stop();
 			this.logCompletedWrite(request, watch, pkgName);
 		}
@@ -67,33 +57,24 @@ public class CommonLogAspect {
 	}
 	
 	
-	@Around("execution(* co.kr.istarbucks..*Service.*(..))")
+	@Around("execution(* co.kr.cafego..*Service.*(..))")
 	public Object servecieAround(ProceedingJoinPoint joinPoint) throws Throwable {
 		Object obj = null;
 
 		StopWatch watch   = new StopWatch();
 		String className  = joinPoint.getTarget().getClass().getSimpleName();
 		String methodName = joinPoint.getSignature().getName();
-		String fullPkgName = joinPoint.getTarget().getClass().getPackage().getName();
-		String[] fullPkgArr = StringUtils.split(fullPkgName,'.');
-		String pkgName = fullPkgArr[fullPkgArr.length-1];
 		
 		try{
 			watch.start();
-			if(StringUtils.equals(pkgName, STOCK_CHK)) {
-				SLOGGER.info("[{}] {}", className, "----- START ["+methodName+"] -----");
-			}else {
-				LOGGER.info("[{}] {}", className, "----- START ["+methodName+"] -----");
-			}
+			LOGGER.info("[{}] {}", className, "----- START ["+methodName+"] -----");
+			
 
 			obj = joinPoint.proceed();
 		}finally{
 			watch.stop();
-			if(StringUtils.equals(pkgName, STOCK_CHK)) {
-				SLOGGER.info("[{}] {}", className, "----- END ["+methodName+"](" + watch.toString() + ") -----");
-			}else {
-				LOGGER.info("[{}] {}", className, "----- END ["+methodName+"](" + watch.toString() + ") -----");
-			}
+			LOGGER.info("[{}] {}", className, "----- END ["+methodName+"](" + watch.toString() + ") -----");
+
 		}
 		
 		return obj;
@@ -145,46 +126,24 @@ public class CommonLogAspect {
 	}
 	
 	private void logPreWrite(HttpServletRequest request, String pkgName) {
-		if(StringUtils.equals(pkgName, STOCK_CHK)) {
-			SLOGGER.info("Connected: [{}][{}][{}|{}][{}]", 
-					request.getRemoteAddr(),
-					(String) request.getAttribute("userId"),
-					request.getScheme(), 
-					getMethod(request),				
-					request.getRequestURI()
-			);
-		}else {
-			LOGGER.info("Connected: [{}][{}][{}|{}][{}]", 
-					request.getRemoteAddr(),
-					(String) request.getAttribute("userId"),
-					request.getScheme(), 
-					getMethod(request),				
-					request.getRequestURI()
-			);
-		}
+		LOGGER.info("Connected: [{}][{}][{}|{}][{}]", 
+				request.getRemoteAddr(),
+				(String) request.getAttribute("userId"),
+				request.getScheme(), 
+				getMethod(request),				
+				request.getRequestURI()
+		);
 		
 	}
 	private void logCompletedWrite(HttpServletRequest request, StopWatch watch, String pkgName) {
-		if(StringUtils.equals(pkgName,STOCK_CHK)) {
-			SLOGGER.info("Completed: [{}][{}][{}|{}][{}]({})", 
-					request.getRemoteAddr(),
-					(String) request.getAttribute("userId"),
-					request.getScheme(), 
-					getMethod(request),				
-					request.getRequestURI(),
-					watch.toString()
-			);
-		}else {
-			LOGGER.info("Completed: [{}][{}][{}|{}][{}]({})", 
-					request.getRemoteAddr(),
-					(String) request.getAttribute("userId"),
-					request.getScheme(), 
-					getMethod(request),				
-					request.getRequestURI(),
-					watch.toString()
-			);
-		}
-		
+		LOGGER.info("Completed: [{}][{}][{}|{}][{}]({})", 
+				request.getRemoteAddr(),
+				(String) request.getAttribute("userId"),
+				request.getScheme(), 
+				getMethod(request),				
+				request.getRequestURI(),
+				watch.toString()
+		);
 	}
 	
 	private String getMethod(HttpServletRequest request) {

@@ -42,10 +42,6 @@ import co.kr.cafego.core.support.CustomDateFormatter;
 import co.kr.cafego.core.support.XssConverter;
 
 
-/**
- * Spring ?���? ?��?��
- * @author �?규남
- */
 @Configuration
 @PropertySource({
 	"classpath:${spring.profiles.active:dev}/default.properties",
@@ -56,9 +52,12 @@ import co.kr.cafego.core.support.XssConverter;
 @ImportResource({
 	"classpath:etc-config.xml",
 })
+@Import({
+	TraceConfig.class
+})
 @EnableWebMvc
 @EnableAspectJAutoProxy
-@ComponentScan(basePackageClasses = {BasePackageMarker.class}, nameGenerator = StarbucksBeanNameGenerator.class)
+@ComponentScan(basePackageClasses = {BasePackageMarker.class}, nameGenerator = CafegoBeanNameGenerator.class)
 public class ApplicationConfig extends AbstractApplicationConfig {
 	 
 	private final Logger logger = LoggerFactory.getLogger("INFO");

@@ -18,9 +18,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 public class TokenKeyCheckInterceptor extends HandlerInterceptorAdapter{
 	
 	private final Logger logger = LoggerFactory.getLogger("INFO");
-	private final Logger sLogger = LoggerFactory.getLogger("STOCK");
 	
-	private static final String STOCK_CHK = "menu-groups";
 //	private AuthMapper authMapper;
 //	
 //	private HpOauthMapper hpOauthMapper;

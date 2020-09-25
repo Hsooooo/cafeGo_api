@@ -6,13 +6,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 
-/**
- * TODO Insert type comment for StarbucksBeanNameGenerator.
- *
- * @author Soonwoo
- * @version $Revision: 1.1 $
- */
-public class StarbucksBeanNameGenerator implements BeanNameGenerator {
+public class CafegoBeanNameGenerator implements BeanNameGenerator {
 	
 	@Override
 	public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
