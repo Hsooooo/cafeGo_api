@@ -1,13 +1,3 @@
-/*
- * @(#) $Id: AppFunction.java,v 1.8 2018/03/23 05:49:33 iamjihun Exp $
- * 
- * 서비스명(ex. Starbucks Service)
- * 
- * Copyright 년도(ex.2011) eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, 182-13, Guro 3-dong, Guro-gu
- * Seoul, Korea
- */
-
 package co.kr.cafego.common.util;
 
 import java.util.ArrayList;
@@ -21,8 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.env.Environment;
-
-import co.kr.istarbucks.xo.common.dto.CartStockInfoDto;
 
 public class AppFunction {
 	
@@ -318,85 +306,85 @@ public class AppFunction {
 	 * @param cartStockList
 	 * @return
 	 */
-	public static Map<String, Map<String, Integer>> checkCartStock(List<CartStockInfoDto> cartStockList){
-		Map<String, Map<String, Integer>> itemMap = new HashMap<String, Map<String,Integer>>();
-		
-		/*
-		 * cartStockList의 데이터 구성
-		 * item_seq = 0  : 현 매장의 SKU별 재고량
-		 * item_seq != 0 : 재고 계산(차감)을 해야하는 SKU
-		 */
-		
-		//1. 현재 매장의 SKU별 재고량을 설정 ==========================================
-		Map<String, Integer> currentStockMap = new HashMap<String, Integer>(); 
-		Set<Integer> itemSet = new HashSet<Integer>();
-		
-		for(CartStockInfoDto dto : cartStockList){
-			if(StringUtils.equals(dto.getItemSeq(), "0")){
-				currentStockMap.put(dto.getSkuNo(), Integer.parseInt(dto.getStockCnt()));
-			}else{
-				itemSet.add(Integer.parseInt(dto.getItemSeq()));
-			}
-		}
-		
-		//2. item_seq를 정렬처리 (재고 계산시 item_seq가 낮은 메뉴부터 재고를 계산) =======
-		List<Integer> itemList = new ArrayList<Integer>(itemSet);
-		Collections.sort(itemList);
-		
-		//3. item_seq별 구성 SKU 데이터를 구성 =======================================
-		//ex. 1={5210008061=1, 5110009171=2}, 2={5210008061=1, 5110009171=2}, 3={5110007147=1}
-		for(int item : itemList){
-			Map<String, Integer> skuMap = new HashMap<String, Integer>();
-			itemMap.put(String.valueOf(item), skuMap);
-			
-			for(CartStockInfoDto dto : cartStockList){
-				if(StringUtils.equals(dto.getItemSeq(), String.valueOf(item))){
-					skuMap.put(dto.getSkuNo(), Integer.parseInt(dto.getStockCnt()));
-				}
-			}
-		}
-		
-		//4. 재고 계산 ============================================================
-		String result = "";
-		Map<String, Integer> itemSkuMap = null;
-	
-		for(int itemSeq : itemList){
-			result = "";
-			itemSkuMap = new HashMap<String, Integer>();
-			
-			try{
-				itemSkuMap = itemMap.get(String.valueOf(itemSeq));
-				
-				for(String sku : itemSkuMap.keySet()){
-					StringBuffer sb = new StringBuffer(result);
-					if((currentStockMap.get(sku) - itemSkuMap.get(sku)) >= 0){
-						sb.append('Y');
-						result = sb.toString();
-					}else{
-						sb.append('S');
-						result = sb.toString();
-					}
-				}
-				
-				//4-1. 재고 부족 SKU가 하나라도 존재하는 경우 '재고 부족'처리 (현재 매장의 SKU별 재고량을 차감하지 않음)
-				if(result.contains("S")){
-					itemSkuMap.put("RESULT", 0);
-					
-				//4-2. 모두 판매 가능한 경우 현재 매장의 SKU별 재고량을 차감 후 '판매 가능'으로 설정
-				}else{
-					for(String sku : itemSkuMap.keySet()){
-						currentStockMap.put(sku, (currentStockMap.get(sku)-itemSkuMap.get(sku)));
-					}
-					
-					itemSkuMap.put("RESULT", 1);
-				}
-			}catch(Exception ex){
-				itemSkuMap.put("RESULT", 0);
-			}
-		}
-		
-		return itemMap;
-	}
+//	public static Map<String, Map<String, Integer>> checkCartStock(List<CartStockInfoDto> cartStockList){
+//		Map<String, Map<String, Integer>> itemMap = new HashMap<String, Map<String,Integer>>();
+//		
+//		/*
+//		 * cartStockList의 데이터 구성
+//		 * item_seq = 0  : 현 매장의 SKU별 재고량
+//		 * item_seq != 0 : 재고 계산(차감)을 해야하는 SKU
+//		 */
+//		
+//		//1. 현재 매장의 SKU별 재고량을 설정 ==========================================
+//		Map<String, Integer> currentStockMap = new HashMap<String, Integer>(); 
+//		Set<Integer> itemSet = new HashSet<Integer>();
+//		
+//		for(CartStockInfoDto dto : cartStockList){
+//			if(StringUtils.equals(dto.getItemSeq(), "0")){
+//				currentStockMap.put(dto.getSkuNo(), Integer.parseInt(dto.getStockCnt()));
+//			}else{
+//				itemSet.add(Integer.parseInt(dto.getItemSeq()));
+//			}
+//		}
+//		
+//		//2. item_seq를 정렬처리 (재고 계산시 item_seq가 낮은 메뉴부터 재고를 계산) =======
+//		List<Integer> itemList = new ArrayList<Integer>(itemSet);
+//		Collections.sort(itemList);
+//		
+//		//3. item_seq별 구성 SKU 데이터를 구성 =======================================
+//		//ex. 1={5210008061=1, 5110009171=2}, 2={5210008061=1, 5110009171=2}, 3={5110007147=1}
+//		for(int item : itemList){
+//			Map<String, Integer> skuMap = new HashMap<String, Integer>();
+//			itemMap.put(String.valueOf(item), skuMap);
+//			
+//			for(CartStockInfoDto dto : cartStockList){
+//				if(StringUtils.equals(dto.getItemSeq(), String.valueOf(item))){
+//					skuMap.put(dto.getSkuNo(), Integer.parseInt(dto.getStockCnt()));
+//				}
+//			}
+//		}
+//		
+//		//4. 재고 계산 ============================================================
+//		String result = "";
+//		Map<String, Integer> itemSkuMap = null;
+//	
+//		for(int itemSeq : itemList){
+//			result = "";
+//			itemSkuMap = new HashMap<String, Integer>();
+//			
+//			try{
+//				itemSkuMap = itemMap.get(String.valueOf(itemSeq));
+//				
+//				for(String sku : itemSkuMap.keySet()){
+//					StringBuffer sb = new StringBuffer(result);
+//					if((currentStockMap.get(sku) - itemSkuMap.get(sku)) >= 0){
+//						sb.append('Y');
+//						result = sb.toString();
+//					}else{
+//						sb.append('S');
+//						result = sb.toString();
+//					}
+//				}
+//				
+//				//4-1. 재고 부족 SKU가 하나라도 존재하는 경우 '재고 부족'처리 (현재 매장의 SKU별 재고량을 차감하지 않음)
+//				if(result.contains("S")){
+//					itemSkuMap.put("RESULT", 0);
+//					
+//				//4-2. 모두 판매 가능한 경우 현재 매장의 SKU별 재고량을 차감 후 '판매 가능'으로 설정
+//				}else{
+//					for(String sku : itemSkuMap.keySet()){
+//						currentStockMap.put(sku, (currentStockMap.get(sku)-itemSkuMap.get(sku)));
+//					}
+//					
+//					itemSkuMap.put("RESULT", 1);
+//				}
+//			}catch(Exception ex){
+//				itemSkuMap.put("RESULT", 0);
+//			}
+//		}
+//		
+//		return itemMap;
+//	}
 	
 	/**
 	 * 전자영수증 url 생성

@@ -1,16 +1,3 @@
-/*
- * @(#) $Id: DateTime.java,v 1.5 2018/03/23 05:49:33 iamjihun Exp $
- * 
- * Starbucks Service
- * 
- * Copyright 2015 eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, Digitalro 306, Guro-gu,
- * Seoul, Korea
- */
-
-/**
- * 
- */
 package co.kr.cafego.common.util;
 
 

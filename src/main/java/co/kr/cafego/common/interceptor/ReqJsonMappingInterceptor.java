@@ -1,16 +1,3 @@
-/*
- * @(#) $Id: ReqJsonMappingInterceptor.java,v 1.1 2017/09/07 04:14:07 namgu1 Exp $
- * 
- * Starbucks Service
- * 
- * Copyright 2015 eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, Digitalro 306, Guro-gu,
- * Seoul, Korea
- */
-
-/**
- * 
- */
 package co.kr.cafego.common.interceptor;
 
 import java.io.BufferedReader;
@@ -22,8 +9,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.HttpMethod;
 
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.lang.StringUtils;
 import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
@@ -35,16 +22,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import co.kr.istarbucks.common.util.ResultCode;
-import co.kr.istarbucks.core.support.ReqParameterValidator;
+import co.kr.cafego.common.util.ResultCode;
+import co.kr.cafego.core.support.ReqParameterValidator;
 import net.minidev.json.JSONObject;
 
-/**
- * Request Mapping 인터셉터
- *
- * @author sw.Lee
- * @version $Revision: 1.1 $
- */
 @Controller
 public class ReqJsonMappingInterceptor extends HandlerInterceptorAdapter {
 	private final Logger logger = LoggerFactory.getLogger("INFO");
@@ -71,7 +52,7 @@ public class ReqJsonMappingInterceptor extends HandlerInterceptorAdapter {
 			String line = null;
 			String raw = null;
 			//GET 메소드일 경우 Request Body 미존재,, 로깅 및 매핑하지않음
-			if(!StringUtils.equals(request.getMethod(), HttpMethod.GET)) {
+			if(!StringUtils.equals(request.getMethod(), "GET")) {
 				//======================================================================================
 				// 1. reading pay load[request body] 
 				//======================================================================================

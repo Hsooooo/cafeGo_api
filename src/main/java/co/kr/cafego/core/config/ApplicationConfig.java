@@ -33,24 +33,21 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import co.kr.istarbucks.BasePackageMarker;
-import co.kr.istarbucks.common.interceptor.ApiAuthInterceptor;
-import co.kr.istarbucks.common.interceptor.ReqJsonMappingInterceptor;
-import co.kr.istarbucks.common.interceptor.TokenKeyCheckInterceptor;
-import co.kr.istarbucks.common.util.MessageUtil;
-import co.kr.istarbucks.common.util.ReturnObject;
-import co.kr.istarbucks.core.support.CustomDateFormatter;
-import co.kr.istarbucks.core.support.XssConverter;
-import co.kr.istarbucks.oauth.token.HpOauthMapper;
-import co.kr.istarbucks.xo.auth.AuthMapper;
+import co.kr.cafego.BasePackageMarker;
+import co.kr.cafego.common.interceptor.ApiAuthInterceptor;
+import co.kr.cafego.common.interceptor.ReqJsonMappingInterceptor;
+import co.kr.cafego.common.util.MessageUtil;
+import co.kr.cafego.common.util.ReturnObject;
+import co.kr.cafego.core.support.CustomDateFormatter;
+import co.kr.cafego.core.support.XssConverter;
 import net.ezens.common.env.EnvironmentWrapper;
 import net.ezens.common.trace.TraceConfig;
 import net.ezens.common.web.config.AbstractApplicationConfig;
 
 
 /**
- * Spring ?™˜ê²? ?„¤? •
- * @author ê¹?ê·œë‚¨
+ * Spring ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
+ * @author ï¿½?ê·œë‚¨
  */
 @Configuration
 @PropertySource({
@@ -71,18 +68,18 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	 
 	private final Logger logger = LoggerFactory.getLogger("INFO");
 	
-	// properties ?š?“
+	// properties ?ï¿½ï¿½?ï¿½ï¿½
 	@Inject
 	private Environment env;
 	
 	@Inject
 	private EnvironmentWrapper envw;
 	
-	@Inject
-	private AuthMapper authMapper;
-	
-	@Inject
-	private HpOauthMapper hpOauthMapper;
+//	@Inject
+//	private AuthMapper authMapper;
+//	
+//	@Inject
+//	private HpOauthMapper hpOauthMapper;
 	
 	public ApplicationConfig() {
 		logger.info("{} is initializing.", ApplicationConfig.class);
@@ -94,7 +91,7 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 		//DH keypair Error fix
 		Security.addProvider(new BouncyCastleProvider());
 	}
-	/**************************************** Bean definition ?‹œ?‘ ****************************************/
+	/**************************************** Bean definition ?ï¿½ï¿½?ï¿½ï¿½ ****************************************/
 	@Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -106,7 +103,7 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 		return multipartResolver;
 	}
 	
-	//json ì²˜ë¦¬?š© view
+	//json ì²˜ë¦¬?ï¿½ï¿½ view
 	@Bean
 	public MappingJackson2JsonView jsonView(){
 		MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
@@ -115,7 +112,7 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 		return jsonView;
 	}
 	
-	//jsp ì²˜ë¦¬?š© view
+	//jsp ì²˜ë¦¬?ï¿½ï¿½ view
 	@Bean
 	public InternalResourceViewResolver viewResolver(){
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -129,15 +126,15 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 		return new ReturnObject();
 	}
 	
-	//Message.properties ì²˜ë¦¬?š© util
+	//Message.properties ì²˜ë¦¬?ï¿½ï¿½ util
 	@Bean(name="messageUtil")
 	public MessageUtil messageUtil(){
 		MessageUtil messageUtil =  new MessageUtil(env);
 		return messageUtil;
 	}
-	/**************************************** Bean definition ? ****************************************/
+	/**************************************** Bean definition ?ï¿½ï¿½ ****************************************/
 	
-	/****************************** WebMvcConfigurerAdapter overriding ?‹œ?‘ ******************************/
+	/****************************** WebMvcConfigurerAdapter overriding ?ï¿½ï¿½?ï¿½ï¿½ ******************************/
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		PageableHandlerMethodArgumentResolver pageableArgumentResolver = new PageableHandlerMethodArgumentResolver();
@@ -160,9 +157,9 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new ApiAuthInterceptor(env));			//api ?¸ì¦ê?? ¨ ì²´í¬
+		registry.addInterceptor(new ApiAuthInterceptor(env));			//api ?ï¿½ï¿½ì¦ï¿½??ï¿½ï¿½ ì²´í¬
 		registry.addInterceptor(new ReqJsonMappingInterceptor(env));	//json object mapping
-		registry.addInterceptor(new TokenKeyCheckInterceptor(env, authMapper, hpOauthMapper));
+//		registry.addInterceptor(new TokenKeyCheckInterceptor(env, authMapper, hpOauthMapper));
 	}
 	
 	@Override
@@ -171,9 +168,9 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 		registry.addFormatter(new NumberFormatter());
 		registry.addConverter(new XssConverter());
 	}
-	/****************************** WebMvcConfigurerAdapter overriding ? ******************************/
+	/****************************** WebMvcConfigurerAdapter overriding ?ï¿½ï¿½ ******************************/
 	
-	//LocalValidatorFactoryBean?? ?´?˜?Š¤?Œ¨?Š¤ ?‚´?— JSR-303 êµ¬í˜„ì²´ì? ê´?? ¨?œ ?¼?´ë¸ŒëŸ¬ë¦¬ë?? ê²??ƒ‰?•˜?—¬ Validatorë¥? ??™?œ¼ë¡? ê²??ƒ‰?•´ì£¼ëŠ” ?—­?• ?„ ?ˆ˜?–‰?•œ?‹¤.
+	//LocalValidatorFactoryBean?? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ JSR-303 êµ¬í˜„ì²´ï¿½? ï¿½??ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ë¸ŒëŸ¬ë¦¬ï¿½?? ï¿½??ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ Validatorï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ï¿½??ï¿½ï¿½?ï¿½ï¿½ì£¼ëŠ” ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½.
 	@Bean
 	public LocalValidatorFactoryBean localValidatorFactoryBean() {
 		return new LocalValidatorFactoryBean();

@@ -1,16 +1,3 @@
-/*
- * @(#) $Id: CommonLogAspect.java,v 1.2 2017/10/12 07:07:55 namgu1 Exp $
- * 
- * Starbucks Service
- * 
- * Copyright 2015 eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, 182-13, Guro 3-dong, Guro-gu
- * Seoul, Korea
- */
-
-/**
- * 
- */
 package co.kr.cafego.common.aspect;
 
 import java.net.URLDecoder;
@@ -32,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import co.kr.istarbucks.common.util.ParamUtils;
+import co.kr.cafego.common.util.ParamUtils;
 /**
  * TODO Insert type comment for CommonLogAspect.
  *

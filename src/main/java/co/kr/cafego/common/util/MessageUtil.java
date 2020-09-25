@@ -1,16 +1,3 @@
-/*
- * @(#) $Id: MessageUtil.java,v 1.3 2019/01/08 06:47:01 iamjihun Exp $
- * 
- * Starbucks Service
- * 
- * Copyright 2015 eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, Digitalro 306, Guro-gu,
- * Seoul, Korea
- */
-
-/**
- * 
- */
 package co.kr.cafego.common.util;
 
 import java.util.HashMap;

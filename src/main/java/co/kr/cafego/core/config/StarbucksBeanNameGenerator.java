@@ -1,16 +1,3 @@
-/*
- * @(#) $Id: StarbucksBeanNameGenerator.java,v 1.1 2017/09/07 04:14:04 namgu1 Exp $
- * 
- * Starbucks Service
- * 
- * Copyright 2016 eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, Digitalro 306, Guro-gu,
- * Seoul, Korea
- */
-
-/**
- * 
- */
 package co.kr.cafego.core.config;
 
 import java.beans.Introspector;

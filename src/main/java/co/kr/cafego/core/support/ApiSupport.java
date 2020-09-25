@@ -1,16 +1,3 @@
-/*
- * @(#) $Id: ApiSupport.java,v 1.3 2018/03/22 03:59:18 jkkim2 Exp $
- * 
- * Starbucks Service
- * 
- * Copyright 2015 eZENsolution Co., Ltd. All rights reserved.
- * 601, Daerung Post Tower II, Digitalro 306, Guro-gu,
- * Seoul, Korea
- */
-
-/**
- * 
- */
 package co.kr.cafego.core.support;
 
 import java.util.List;
@@ -22,8 +9,8 @@ import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import co.kr.istarbucks.common.exception.ApiException;
-import co.kr.istarbucks.common.util.ResultCode;
+import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.ResultCode;
 
 
 /**
