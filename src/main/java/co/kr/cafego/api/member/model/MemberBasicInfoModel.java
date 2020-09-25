@@ -2,7 +2,15 @@ package co.kr.cafego.api.member.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 회원 기본 정보
+ * @author Hsooooo
+ *
+ */
 public class MemberBasicInfoModel {
+	//TODO 주석써야하는데 귀찮아서..일단은
+	
+	
 	@JsonProperty("memberNum")
 	private String memberNum;
 	@JsonProperty("memberEmail")

@@ -81,12 +81,15 @@ public class MemberService extends ApiSupport{
 			
 			
 			// 전문의 리턴 형식은 항상 Model로 끝나는 클래스
-			// -> 클래스 이름은 항상 그 목적이 분명하게 드러나게, 간결하게, camelCase로!
+			// -> 클래스 이름은 항상 그 목적이 분명하게 드러나게, 간결하게, 단어별 첫글자는 대문자로!
 			model.setJoinFlag(pointDto.getJoinFlag());
 			model.setMemberEmail(pointDto.getMemberEmail());
 			model.setMemberName(pointDto.getMemberName());
 			model.setMemberNum(pointDto.getMemberNum());
 			model.setMemberSex(pointDto.getMemberSex());
+			
+			//TODO 자바 변수명은 모두 카멜케이스로 작성
+			//     DB 컬럼명은 DB는 대소문자를 구분하지 않기때문에 _케이스 사용
 			
 		}catch(ApiException ae) {
 			logger.error(ae.getMessage());
