@@ -44,10 +44,10 @@ public class DatabaseConfig{
 	@Bean(name="dataSource")
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty("db.driver.className", ""));
-		dataSource.setUrl(env.getProperty("db.url", ""));
-		dataSource.setUsername(env.getProperty("db.user.name", ""));
-		dataSource.setPassword(env.getProperty("db.user.pwd", ""));
+		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+		dataSource.setUrl("jdbc:oracle:thin@211.47.118.87:1522:xe");
+		dataSource.setUsername("cafeGo");
+		dataSource.setPassword("cafeGo");
 		
 		return dataSource;
 	}
@@ -104,89 +104,89 @@ public class DatabaseConfig{
 	}
 	//###################################### Jndi 방식 대비 샘플 ######################################
 	
-	@SuppressWarnings("rawtypes")
-	public static Hashtable jndiContext(){
-		Hashtable<String, String> ht = new Hashtable<String, String>();
-		ht.put(Context.INITIAL_CONTEXT_FACTORY,	"jeus.jndi.JNSContextFactory");
-		ht.put(Context.URL_PKG_PREFIXES, 		"jeus.jndi.jns.url");
-
-//		if("local".equals(mode)) {
-//			ht.put(Context.PROVIDER_URL, 			"127.0.0.1:9738");
-//			ht.put(Context.SECURITY_PRINCIPAL, 		"administrator");
-//			ht.put(Context.SECURITY_CREDENTIALS, 	"rkrk6469");
-//		} else {
-			ht.put(Context.PROVIDER_URL, 		 System.getProperty("das.ip"));
-			ht.put(Context.SECURITY_PRINCIPAL, 	 TripleDes.decrypt("GpY67VzJoQE="));
-			ht.put(Context.SECURITY_CREDENTIALS, TripleDes.decrypt("JGNtwEZPmi572P7ekqk2VA=="));
+//	@SuppressWarnings("rawtypes")
+//	public static Hashtable jndiContext(){
+//		Hashtable<String, String> ht = new Hashtable<String, String>();
+//		ht.put(Context.INITIAL_CONTEXT_FACTORY,	"jeus.jndi.JNSContextFactory");
+//		ht.put(Context.URL_PKG_PREFIXES, 		"jeus.jndi.jns.url");
+//
+////		if("local".equals(mode)) {
+////			ht.put(Context.PROVIDER_URL, 			"127.0.0.1:9738");
+////			ht.put(Context.SECURITY_PRINCIPAL, 		"administrator");
+////			ht.put(Context.SECURITY_CREDENTIALS, 	"rkrk6469");
+////		} else {
+//			ht.put(Context.PROVIDER_URL, 		 System.getProperty("das.ip"));
+//			ht.put(Context.SECURITY_PRINCIPAL, 	 TripleDes.decrypt("GpY67VzJoQE="));
+//			ht.put(Context.SECURITY_CREDENTIALS, TripleDes.decrypt("JGNtwEZPmi572P7ekqk2VA=="));
+////		}
+//		
+//		return ht;
+//	}
+//	
+//	
+//	/**
+//	 * ?��?��?��?��?��_DB JNDI
+//	 */
+//	@Bean(name="dataSourceXO")
+//	public DataSource dataSourceXO(){
+//		DataSource dataSource = null;
+//		
+//		try {
+//			Context ctx = new InitialContext(DatabaseConfig.jndiContext());
+//			dataSource = (DataSource)ctx.lookup("xojndi");
+//		} catch (NamingException ne) {
+//			LOGGER.error(ne.getMessage().replaceAll("\n|\r", ""), ne);
 //		}
-		
-		return ht;
-	}
-	
-	
-	/**
-	 * ?��?��?��?��?��_DB JNDI
-	 */
-	@Bean(name="dataSourceXO")
-	public DataSource dataSourceXO(){
-		DataSource dataSource = null;
-		
-		try {
-			Context ctx = new InitialContext(DatabaseConfig.jndiContext());
-			dataSource = (DataSource)ctx.lookup("xojndi");
-		} catch (NamingException ne) {
-			LOGGER.error(ne.getMessage().replaceAll("\n|\r", ""), ne);
-		}
-		return dataSource;
-	}
-	@Bean(name="sqlSessionFactoryXO")
-    public SqlSessionFactory sqlSessionFactoryXO(@Qualifier("dataSourceXO") DataSource dataSourceXO) throws Exception {
-		PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(dataSourceXO);
-		factoryBean.setConfigLocation(resourceResolver.getResource(getConfigLocation()));
-        factoryBean.setMapperLocations(resourceResolver.getResources(getMapperLocationPatternXO()));
-        factoryBean.setConfigurationProperties(getConfigurationProperties());
-        return factoryBean.getObject();
-    }
-	
-	@Bean(name="sqlSessionXO")
-    public SqlSessionTemplate sqlSessionXO(@Qualifier("sqlSessionFactoryXO") SqlSessionFactory sqlSessionFactoryXO) {
-    	return new SqlSessionTemplate(sqlSessionFactoryXO);
-    }
-	
-	/**
-	 * XO TransactionManager
-	 * @param dataSourceMSR
-	 * @return
-	 */
-	@Bean(name="transactionManagerXO")
-	public PlatformTransactionManager transactionManagerXO(@Qualifier("dataSourceXO") DataSource dataSourceXO) {
-		return new DataSourceTransactionManager(dataSourceXO);
-	}
-	
-	@Bean(name="transactionTemplateXO")
-	public TransactionTemplate transactionTemplateXO(@Qualifier("transactionManagerXO") PlatformTransactionManager transactionManagerXO){
-		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManagerXO);
-		return transactionTemplate;
-	}
-	
-	/**
-	 * ?��?��?��?��?�� Mapper Scan
-	 * package : co.kr.istarbucks.xo.**
-	 * @return
-	 */
-	@Bean
-	public MapperScannerConfigurer mapperScannerConfigurerXO(){
-		MapperScannerConfigurer mc = new MapperScannerConfigurer();
-		mc.setNameGenerator(new CafegoBeanNameGenerator());
-		mc.setBasePackage("co.kr.istarbucks.xo.**");
-		mc.setSqlSessionFactoryBeanName("sqlSessionFactoryXO");
-		return mc;
-	}
-	protected String getMapperLocationPatternXO() {
-		return "classpath:co/kr/istarbucks/xo/**/*Mapper.xml";
-	}
+//		return dataSource;
+//	}
+//	@Bean(name="sqlSessionFactoryXO")
+//    public SqlSessionFactory sqlSessionFactoryXO(@Qualifier("dataSourceXO") DataSource dataSourceXO) throws Exception {
+//		PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+//		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+//		factoryBean.setDataSource(dataSourceXO);
+//		factoryBean.setConfigLocation(resourceResolver.getResource(getConfigLocation()));
+//        factoryBean.setMapperLocations(resourceResolver.getResources(getMapperLocationPatternXO()));
+//        factoryBean.setConfigurationProperties(getConfigurationProperties());
+//        return factoryBean.getObject();
+//    }
+//	
+//	@Bean(name="sqlSessionXO")
+//    public SqlSessionTemplate sqlSessionXO(@Qualifier("sqlSessionFactoryXO") SqlSessionFactory sqlSessionFactoryXO) {
+//    	return new SqlSessionTemplate(sqlSessionFactoryXO);
+//    }
+//	
+//	/**
+//	 * XO TransactionManager
+//	 * @param dataSourceMSR
+//	 * @return
+//	 */
+//	@Bean(name="transactionManagerXO")
+//	public PlatformTransactionManager transactionManagerXO(@Qualifier("dataSourceXO") DataSource dataSourceXO) {
+//		return new DataSourceTransactionManager(dataSourceXO);
+//	}
+//	
+//	@Bean(name="transactionTemplateXO")
+//	public TransactionTemplate transactionTemplateXO(@Qualifier("transactionManagerXO") PlatformTransactionManager transactionManagerXO){
+//		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManagerXO);
+//		return transactionTemplate;
+//	}
+//	
+//	/**
+//	 * ?��?��?��?��?�� Mapper Scan
+//	 * package : co.kr.istarbucks.xo.**
+//	 * @return
+//	 */
+//	@Bean
+//	public MapperScannerConfigurer mapperScannerConfigurerXO(){
+//		MapperScannerConfigurer mc = new MapperScannerConfigurer();
+//		mc.setNameGenerator(new CafegoBeanNameGenerator());
+//		mc.setBasePackage("co.kr.istarbucks.xo.**");
+//		mc.setSqlSessionFactoryBeanName("sqlSessionFactoryXO");
+//		return mc;
+//	}
+//	protected String getMapperLocationPatternXO() {
+//		return "classpath:co/kr/istarbucks/xo/**/*Mapper.xml";
+//	}
 	
 	//###################################### Jndi 방식 대비 샘플 ######################################
 	
