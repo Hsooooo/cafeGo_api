@@ -13,10 +13,13 @@ import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -35,42 +38,68 @@ public class DatabaseConfig{
 	@Inject
 	private Environment env;
 	
-	@Bean(name="dataSource")
+	@Value("${db.url}")
+	private String url;
+	
+	@Value("${db.user.name}")
+	private String userName;
+	
+	@Value("${db.user.pwd}")
+	private String pwd;
+	
+	@Value("${db.driver.className}")
+	private String className;
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	
+	@Bean
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-		dataSource.setUrl("jdbc:oracle:thin@211.47.118.87:1522:xe");
-		dataSource.setUsername("spring_test");
-		dataSource.setPassword("spring_test");
+		dataSource.setDriverClassName(className);
+		dataSource.setUrl(url);
+		dataSource.setUsername(userName);
+		dataSource.setPassword(pwd);
 		
 		return dataSource;
 	}
 	
 	
-	@Bean(name="sqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
-		PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+	@Bean
+    public SqlSessionFactoryBean sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(dataSource);
-		factoryBean.setConfigLocation(resourceResolver.getResource(getConfigLocation()));
-        factoryBean.setMapperLocations(resourceResolver.getResources(getMapperLocationPattern()));
+		factoryBean.setDataSource(dataSource());
+		
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource[] resources = resolver.getResources("classpath*:co/kr/cafego/api/**/*Mapper.xml");
+		factoryBean.setMapperLocations(resources);
+		factoryBean.setConfigLocation(resolver.getResource(getConfigLocation()));
         factoryBean.setConfigurationProperties(getConfigurationProperties());
-        return factoryBean.getObject();
+        return factoryBean;
     }
 	
-	@Bean(name="sqlSession")
-    public SqlSessionTemplate sqlSession(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-    	return new SqlSessionTemplate(sqlSessionFactory);
-    }
-
-	
-	@Bean(name="transactionManager")
-	public PlatformTransactionManager transactionManager(@Qualifier("dataSource") DataSource dataSource) {
-		return new DataSourceTransactionManager(dataSource);
+	@Bean(destroyMethod = "clearCache")
+	public SqlSessionTemplate SqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
+		return new SqlSessionTemplate(sqlSessionFactory);
 	}
 	
-	@Bean(name="transactionTemplate")
-	public TransactionTemplate transactionTemplate(@Qualifier("transactionManager") PlatformTransactionManager transactionManager){
+//	
+//	@Bean(name="sqlSession")
+//    public SqlSessionTemplate sqlSession(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+//    	return new SqlSessionTemplate(sqlSessionFactory);
+//    }
+
+	
+	@Bean
+	public PlatformTransactionManager transactionManager() {
+		return new DataSourceTransactionManager(dataSource());
+	}
+	
+	@Bean
+	public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager){
 		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 		return transactionTemplate;
 	}
