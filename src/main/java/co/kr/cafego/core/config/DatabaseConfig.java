@@ -59,10 +59,10 @@ public class DatabaseConfig{
 	@Bean
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(className);
-		dataSource.setUrl(url);
-		dataSource.setUsername(userName);
-		dataSource.setPassword(pwd);
+		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+		dataSource.setUrl("jdbc:oracle:thin:@211.47.118.87:1522:XE");
+		dataSource.setUsername("cafego");
+		dataSource.setPassword("cafego");
 		
 		return dataSource;
 	}

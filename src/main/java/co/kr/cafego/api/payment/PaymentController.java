@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.kr.cafego.api.member.MemberService;
+import co.kr.cafego.api.payment.gateway.KakaoPayGateway;
 import co.kr.cafego.core.support.ApiSupport;
 
 /**
@@ -28,6 +30,12 @@ public class PaymentController extends ApiSupport {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private KakaoPayGateway kakaoGate;
+	
+	@Autowired
+	private Environment env;
 	
 	
 	/**
@@ -72,5 +80,27 @@ public class PaymentController extends ApiSupport {
 		
 		return obj;
 		
+	}
+	
+	
+	@RequestMapping(value="/kakaoTest.do", method=RequestMethod.POST)
+	public Object kakaoTest(@RequestHeader HttpHeaders headers, HttpServletRequest request
+			, HttpServletResponse response, Model model) {
+		
+		HashMap<String, Object> payMap = new HashMap<String, Object>();
+		payMap.put("cartNo","123456");
+		payMap.put("memberEmail","rkrk6469");
+		payMap.put("cartName","카페아메리카노 외");
+		payMap.put("totalAmt",22000);
+		
+		logger.info("################ envTest######" + env.getProperty("kakao.pay.host"));
+		try {
+			logger.info("############### tid #####" + kakaoGate.kakaoReady(payMap));
+		}catch (Exception e) {
+			logger.error("Error", e);
+		}
+		
+		
+		return null;
 	}
 }
