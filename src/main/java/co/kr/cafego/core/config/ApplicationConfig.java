@@ -22,8 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.number.NumberFormatter;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -58,7 +56,7 @@ import co.kr.cafego.core.support.XssConverter;
 @EnableWebMvc
 @EnableAspectJAutoProxy
 @ComponentScan(basePackageClasses = {BasePackageMarker.class}, nameGenerator = CafegoBeanNameGenerator.class)
-public class ApplicationConfig extends AbstractApplicationConfig {
+public class ApplicationConfig extends net.ezens.common.web.config.AbstractApplicationConfig {
 	 
 	private final Logger logger = LoggerFactory.getLogger("INFO");
 	
@@ -165,14 +163,14 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	/****************************** WebMvcConfigurerAdapter overriding ?�� ******************************/
 	
 	//LocalValidatorFactoryBean?? ?��?��?��?��?�� ?��?�� JSR-303 구현체�? �??��?�� ?��?��브러리�?? �??��?��?�� Validator�? ?��?��?���? �??��?��주는 ?��?��?�� ?��?��?��?��.
-	@Bean
-	public LocalValidatorFactoryBean localValidatorFactoryBean() {
-		return new LocalValidatorFactoryBean();
-	}
-	@Bean
-	public MethodValidationPostProcessor methodValidationPostProcessor(){
-		return new MethodValidationPostProcessor();
-	}
+//	@Bean
+//	public LocalValidatorFactoryBean localValidatorFactoryBean() {
+//		return new LocalValidatorFactoryBean();
+//	}
+//	@Bean
+//	public MethodValidationPostProcessor methodValidationPostProcessor(){
+//		return new MethodValidationPostProcessor();
+//	}
 	@Override
 	protected boolean getJsonPrettyPrint() {
 		return envw.getProperty("json.prettyPrint", Boolean.class, Boolean.TRUE);

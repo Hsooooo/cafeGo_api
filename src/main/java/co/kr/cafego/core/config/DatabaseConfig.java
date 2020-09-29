@@ -1,12 +1,8 @@
 package co.kr.cafego.core.config;
 
-import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -27,8 +23,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.ezens.starbucks.biz.util.TripleDes;
-
 @Configuration
 @PropertySource({
 	"classpath:db.properties"
@@ -46,8 +40,8 @@ public class DatabaseConfig{
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 		dataSource.setUrl("jdbc:oracle:thin@211.47.118.87:1522:xe");
-		dataSource.setUsername("cafeGo");
-		dataSource.setPassword("cafeGo");
+		dataSource.setUsername("spring_test");
+		dataSource.setPassword("spring_test");
 		
 		return dataSource;
 	}

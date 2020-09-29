@@ -68,10 +68,10 @@ public abstract class AbstractApplicationConfig extends WebMvcConfigurerAdapter{
 	    return viewResolver;
 	  }
 	
-	  @Bean
-	  public LocalValidatorFactoryBean validator() {
-		  return new LocalValidatorFactoryBean();
-	  }
+//	  @Bean
+//	  public LocalValidatorFactoryBean validator() {
+//		  return new LocalValidatorFactoryBean();
+//	  }
 	
 	  @Bean
 	  public FileDownloadView fileDownloadView() {

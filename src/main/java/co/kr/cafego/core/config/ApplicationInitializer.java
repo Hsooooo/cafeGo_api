@@ -10,7 +10,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.multipart.support.MultipartFilter;
 
-public class ApplicationInitializer extends AbstractApplicationInitializer {
+public class ApplicationInitializer extends net.ezens.common.web.config.AbstractApplicationInitializer {
 
 	private final Logger logger = LoggerFactory.getLogger("INFO");
 	
