@@ -1,5 +1,9 @@
 package co.kr.cafego.api.member;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,9 +50,9 @@ public class MemberService extends ApiSupport{
 			// -> 지금은 무조건 false로 리턴하기때문에 ApiException 발생하지 않음
 			// -> but ApiException 발생시 현재 메서드 최상단에 rollbackFor로 잡힌 클래스가
 			//    ApiException도 같이 있으므로 발생하게 되면 롤백 수행
-			if(validateSample()) {
-				throw new ApiException(ResultCode.EXT_01);
-			}
+//			if(validateSample()) {
+//				throw new ApiException(ResultCode.EXT_01);
+//			}
 			
 			// setp 2. DB 저장
 			// -> 지금은 회원 가입시 들어갈 정보가 회원 정보 테이블 하나이기 때문에 복잡하지 않음
@@ -101,7 +105,29 @@ public class MemberService extends ApiSupport{
 	}
 	
 	
-	private boolean validateSample() {
-		return false;
+	private static void dbTest() {
+		String url = "jdbc:oracle:thin@211.47.118.87:1522:xe";
+		String sql = "SELECT 1 from dual";
+		Connection conn = null;
+		Statement st = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("driver Load Comp");
+			conn = DriverManager.getConnection(url,"spring_test", "spring_test");
+			System.out.println("DB Conn");
+			
+			
+		}catch(Exception e) {
+			
+		}
+		
+	}
+	
+	public static void main(String args[]) {
+		MemberService s = new MemberService();
+		
+		s.dbTest();
 	}
 }
