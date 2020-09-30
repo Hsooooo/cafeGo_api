@@ -3,12 +3,15 @@ package co.kr.cafego.api.payment;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.kr.cafego.api.member.MemberMapper;
 import co.kr.cafego.api.member.dto.MemberPointInfoDto;
 import co.kr.cafego.api.member.model.MemberBasicInfoModel;
+import co.kr.cafego.api.payment.gateway.KakaoPayGateway;
 import co.kr.cafego.common.exception.ApiException;
 import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.core.support.ApiSupport;
@@ -23,6 +26,12 @@ public class PaymentService extends ApiSupport{
 
 	@Autowired
 	private PaymentMapper paymentMapper;
+	
+	@Autowired
+	private KakaoPayGateway kakaoGate;
+	
+	@Autowired
+	private MemberMapper memberMapper;
 	
 	/**
 	 * 6.1. 결제 수단 조회
@@ -50,15 +59,51 @@ public class PaymentService extends ApiSupport{
 	 * @return
 	 */
 	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class})
-	public Object payNOrder(Map<String, String> paramMap) {
+	public Object payNOrder(Map<String, String> paramMap) throws Exception{
 		MemberBasicInfoModel model = new MemberBasicInfoModel();
-		//Controller에서 전달된 값 변수 저장
-		String memberName = paramMap.get("memberName");
-		String memberSex  = paramMap.get("memberSex");
-		String phone	  = paramMap.get("memberPhone");
-		String email	  = paramMap.get("memberEmail");
+		Map<String, Object> dbMap = new HashMap<String, Object>();
+		Map<String, Object> payMap = new HashMap<String, Object>();
 		
+		//Controller에서 전달된 값 변수 저장
+		String memberNum   = paramMap.get("memberNum");
+		String totalAmt    = paramMap.get("totalAmt");
+		String cartName	   = paramMap.get("cartName");
+		String cartNo	   = paramMap.get("cartNo");
+		String payMethod   = paramMap.get("payMethod");
+		String memberEmail = "";
 		try {
+			dbMap.put("memberNum", memberNum);
+			MemberPointInfoDto pointDto = memberMapper.getMemberPointInfo(dbMap);
+			if(pointDto == null) {
+				throw new ApiException("");
+			}
+			payMap.put("cartNo", cartNo);
+			payMap.put("memberEmail", pointDto.getMemberEmail());
+			payMap.put("cartName", cartName);
+			payMap.put("totalAmt", Integer.parseInt(totalAmt));
+			
+			
+			if(StringUtils.equals(payMethod, "K")){
+				
+				String tid = "";
+				tid = kakaoGate.kakaoReady(payMap);
+				dbMap.clear();
+				
+				//카트정보 (READY) 상태로 변경
+				dbMap.put("cartNo", cartNo);
+				int updCnt = paymentMapper.updateCartPayReady(dbMap);
+				
+				
+				//결제정보 저장(READY로 시작)
+				dbMap.put("memberNum", memberNum);
+				dbMap.put("storeCode", "2001");
+				dbMap.put("paymentAmt", totalAmt);
+				dbMap.put("tid", tid);
+				dbMap.put("payMethod", payMethod);
+				
+				int insNum = paymentMapper.insertPaymentReady(dbMap);
+			}
+			
 			
 		}catch(ApiException ae) {
 			logger.error(ae.getMessage());

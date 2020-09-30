@@ -49,7 +49,7 @@ public class PaymentController extends ApiSupport {
 	 * @param headers
 	 * @param request
 	 * @param response
-	 * @param model
+	/ * @param model
 	 * @return
 	 */
 	@RequestMapping(value="/paymentList.do", method=RequestMethod.POST)
@@ -85,16 +85,25 @@ public class PaymentController extends ApiSupport {
 		Map<String, Object> parameters = (Map<String, Object>) request.getAttribute("bodyMap");
 		
 		try {
-			String memberEmail = (String)parameters.get("memberEmail");
-			int totalAmt	   = (int)(double) parameters.get("totalAmt");
-			String cartName	   = (String) parameters.get("cartName");
-			
+			String memberNum = (String)parameters.get("memberNum");
+			int totalAmt	 = (int)(double) parameters.get("totalAmt");
+			String cartName	 = (String) parameters.get("cartName");
+			String cartNo	 = (String) parameters.get("cartNo");
+			String payMethod = (String) parameters.get("payMethod");
 			
 			logger.info("cartName" + cartName);
+			
+			paramMap.put("memberNum", memberNum);
+			paramMap.put("totalAmt", Integer.toString(totalAmt));
+			paramMap.put("cartNo", cartNo);
+			paramMap.put("cartName", cartName);
+			paramMap.put("payMethod", payMethod);
 			
 			obj = paymentService.payNOrder(paramMap);
 		}catch(ApiException ae) {
 			
+		}catch(Exception e) {
+			logger.error("Exception" , e);
 		}
 		
 		

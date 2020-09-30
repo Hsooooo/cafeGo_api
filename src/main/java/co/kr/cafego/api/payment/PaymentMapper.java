@@ -2,21 +2,19 @@ package co.kr.cafego.api.payment;
 
 import java.util.Map;
 
-import co.kr.cafego.api.member.dto.MemberPointInfoDto;
-
 public interface PaymentMapper {
 	
 	/**
-	 * 회원 보유 포인트 조회(예시)
+	 * 결제 준비(장바구니 상태 변경)
 	 * @param dbMap
 	 * @return
 	 */
-	public MemberPointInfoDto getMemberPointInfo(Map<String, Object> dbMap);
+	public int updateCartPayReady(Map<String, Object> dbMap);
 	
 	/**
-	 * 회원 가입
+	 * 결제 정보 저장
 	 * @param dbMap
 	 * @return
 	 */
-	public int memberJoin(Map<String, Object> dbMap);
+	public int insertPaymentReady(Map<String, Object> dbMap);
 }
