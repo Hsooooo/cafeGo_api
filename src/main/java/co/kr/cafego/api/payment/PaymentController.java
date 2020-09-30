@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -13,10 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.kr.cafego.api.member.MemberService;
 import co.kr.cafego.api.payment.gateway.KakaoPayGateway;
+import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.ReturnObject;
 import co.kr.cafego.core.support.ApiSupport;
 
 /**
@@ -36,6 +39,9 @@ public class PaymentController extends ApiSupport {
 	
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private ReturnObject ro;
 	
 	
 	/**
@@ -75,11 +81,56 @@ public class PaymentController extends ApiSupport {
 		Object obj = null;
 		Map<String, String> paramMap = new HashMap<String, String>();
 		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> parameters = (Map<String, Object>) request.getAttribute("bodyMap");
 		
-		obj = paymentService.payNOrder(paramMap);
+		try {
+			String memberEmail = (String)parameters.get("memberEmail");
+			int totalAmt	   = (int)(double) parameters.get("totalAmt");
+			String cartName	   = (String) parameters.get("cartName");
+			
+			
+			logger.info("cartName" + cartName);
+			
+			obj = paymentService.payNOrder(paramMap);
+		}catch(ApiException ae) {
+			
+		}
+		
+		
+		
 		
 		return obj;
 		
+	}
+	
+	/**
+	 * 6.#. 카카오페이 결제 성공시
+	 *  -> 결제 준비시 전달한 approval_url로 요청 받음
+	 * @param headers
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @param pgToken
+	 * @return
+	 */
+	@RequestMapping(value="/kPaySuccess.do", method=RequestMethod.GET)
+	public Object kPaySuccess(@RequestHeader HttpHeaders headers, HttpServletRequest request
+			, HttpServletResponse response, Model model, @RequestParam("pg_token") String pgToken) {
+		Object obj = null;
+		try {
+			if(StringUtils.isEmpty(pgToken)) {
+				throw new ApiException("pgToken NULL");
+			}
+			
+			
+			
+			
+		}catch(ApiException ae) {
+			
+		}
+		
+		return obj;
 	}
 	
 	
