@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.kr.cafego.api.payment.gateway.KakaoPayGateway;
 import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.common.util.ReturnObject;
 import co.kr.cafego.core.support.ApiSupport;
 
@@ -85,29 +86,46 @@ public class PaymentController extends ApiSupport {
 		Map<String, Object> parameters = (Map<String, Object>) request.getAttribute("bodyMap");
 		
 		try {
-			String memberNum = (String)parameters.get("memberNum");
-			int totalAmt	 = (int)(double) parameters.get("totalAmt");
-			String cartName	 = (String) parameters.get("cartName");
-			String cartNo	 = (String) parameters.get("cartNo");
-			String payMethod = (String) parameters.get("payMethod");
+			String memberNum  = (String) parameters.get("memberNum");
+			String totalAmt	  = (String) parameters.get("totalAmt");
+			String cartName	  = (String) parameters.get("cartName");
+			String cartNo	  = (String) parameters.get("cartNo");
+			String payMethod  = (String) parameters.get("payMethod");
+			String pointUseYn = (String) parameters.get("pointUseYn");
+			String pointAmt	  = (String) parameters.get("pointAmt");
+			
+			
+			if(StringUtils.isBlank(memberNum) || StringUtils.isBlank(totalAmt) || StringUtils.isBlank(cartName)
+					|| StringUtils.isBlank(cartNo) || StringUtils.isBlank(payMethod) || StringUtils.isBlank(pointUseYn)) {
+				throw new ApiException("필수 파라미터 NULL", ResultCode.INVALID_PARAMETER);
+			}
+			
+			if(StringUtils.equals(pointUseYn, "Y")) {
+				if(StringUtils.isBlank(pointAmt)) {
+					throw new ApiException("필수 파라미터 NULL", ResultCode.INVALID_PARAMETER);
+				}
+			}
 			
 			logger.info("cartName" + cartName);
 			
 			paramMap.put("memberNum", memberNum);
-			paramMap.put("totalAmt", Integer.toString(totalAmt));
+			paramMap.put("totalAmt", totalAmt);
 			paramMap.put("cartNo", cartNo);
 			paramMap.put("cartName", cartName);
 			paramMap.put("payMethod", payMethod);
+			paramMap.put("pointAmt", pointAmt);
 			
 			obj = paymentService.payNOrder(paramMap);
-		}catch(ApiException ae) {
 			
+			
+			ro.getObject(request, headers, model, obj);
+		}catch(ApiException ae) {
+			logger.error("[{}][{}]","결제 및 주문 처리 오류", ae.getMessage());
+			ro.setResult(response, ae.getResultCode());
 		}catch(Exception e) {
 			logger.error("Exception" , e);
+			ro.setResult(response, "0099");
 		}
-		
-		
-		
 		
 		return obj;
 		

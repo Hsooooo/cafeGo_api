@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.kr.cafego.api.cart.dto.CartInfoDto;
 import co.kr.cafego.api.member.MemberMapper;
 import co.kr.cafego.api.member.dto.MemberPointInfoDto;
 import co.kr.cafego.api.member.model.MemberBasicInfoModel;
@@ -70,6 +71,7 @@ public class PaymentService extends ApiSupport{
 		String cartName	   = paramMap.get("cartName");
 		String cartNo	   = paramMap.get("cartNo");
 		String payMethod   = paramMap.get("payMethod");
+		String pointAmt	   = paramMap.get("pointAmt");
 		String memberEmail = "";
 		try {
 			dbMap.put("memberNum", memberNum);
@@ -77,6 +79,22 @@ public class PaymentService extends ApiSupport{
 			if(pointDto == null) {
 				throw new ApiException("");
 			}
+			if(StringUtils.isNotBlank(pointAmt)) {
+				if(pointDto.getPoint() < Integer.parseInt(pointAmt)){
+					logger.error("포인트 한도 초과");
+					return null; //추후 변경 (ResultCode 재설정)
+				}
+			}
+			// 주문 가능한 카트 조회
+			dbMap.clear();
+			dbMap.put("cartNo", cartNo);
+			CartInfoDto cartDto = paymentMapper.orderPossibleCartInfo(dbMap);
+			
+			if(cartDto == null) {
+				logger.error("주문 가능한 카트 정보 아님");
+				return null; //추후 변경 (ResultCode 재설정)
+			}
+			
 			payMap.put("cartNo", cartNo);
 			payMap.put("memberEmail", pointDto.getMemberEmail());
 			payMap.put("cartName", cartName);

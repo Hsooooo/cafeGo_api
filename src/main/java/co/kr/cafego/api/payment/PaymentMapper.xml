@@ -32,4 +32,13 @@
 			, SYSDATE
 		)
 	</insert>
+	
+	<select id="orderPossibleCartInfo" parameterType="java.util.Map" resultType="co.kr.cafego.api.cart.dto.CartInfoDto">
+		SELECT cart_no as cartNo
+			 , status as status
+		  FROM CART_INFO
+		 WHERE cart_no = #{cartNo} 
+		   AND status NOT IN ('01')  
+	</select>
+	
 </mapper>

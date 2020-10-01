@@ -2,6 +2,8 @@ package co.kr.cafego.api.payment;
 
 import java.util.Map;
 
+import co.kr.cafego.api.cart.dto.CartInfoDto;
+
 public interface PaymentMapper {
 	
 	/**
@@ -17,4 +19,11 @@ public interface PaymentMapper {
 	 * @return
 	 */
 	public int insertPaymentReady(Map<String, Object> dbMap);
+
+	/**
+	 * 결제 가능한 주문서 정보 조회
+	 * @param dbMap
+	 * @return
+	 */
+	public CartInfoDto orderPossibleCartInfo(Map<String, Object> dbMap);
 }
