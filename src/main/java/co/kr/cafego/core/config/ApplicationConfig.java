@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import co.kr.cafego.BasePackageMarker;
 import co.kr.cafego.common.interceptor.ReqJsonMappingInterceptor;
+import co.kr.cafego.common.util.MessageUtil;
 import co.kr.cafego.common.util.ReturnObject;
 import co.kr.cafego.core.support.CustomDateFormatter;
 import co.kr.cafego.core.support.XssConverter;
@@ -78,10 +80,10 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 //		Security.addProvider(new BouncyCastleProvider());
 	}
 	/**************************************** Bean definition ?��?�� ****************************************/
-//	@Bean
-//    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-//        return new PropertySourcesPlaceholderConfigurer();
-//    }
+	@Bean
+    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 	
 	@Bean(name="multipartResolver")
 	public MultipartResolver multipartResolver() {//throws IOException {
@@ -112,11 +114,11 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	}
 	
 	//Message.properties 처리?�� util
-//	@Bean(name="messageUtil")
-//	public MessageUtil messageUtil(){
-//		MessageUtil messageUtil =  new MessageUtil(env);
-//		return messageUtil;
-//	}
+	@Bean(name="messageUtil")
+	public MessageUtil messageUtil(){
+		MessageUtil messageUtil =  new MessageUtil(env);
+		return messageUtil;
+	}
 	/**************************************** Bean definition ?�� ****************************************/
 	
 	/****************************** WebMvcConfigurerAdapter overriding ?��?�� ******************************/
