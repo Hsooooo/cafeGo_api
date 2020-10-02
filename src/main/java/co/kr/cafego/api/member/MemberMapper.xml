@@ -50,4 +50,13 @@
 			, 'O' 
 		)
 	</insert>
+
+	<!-- 로그인 -->
+	<select id="getLogin" parameterType="java.util.Map">
+		SELECT *
+		  FROM ADMIN_USER
+		 WHERE ADMIN_ID = #{adminId}
+		   AND ADMIN_PW = #{adminPw} 
+	</select>
+	
 </mapper>
