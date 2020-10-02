@@ -101,6 +101,14 @@ public class MemberService extends ApiSupport{
 	}
 	
 	
+	public Object loginSign(Map<String, String> paramMap) {
+		
+		
+		
+		return model;
+	}
+	
+	
 	private boolean validateSample() {
 		return false;
 	}
