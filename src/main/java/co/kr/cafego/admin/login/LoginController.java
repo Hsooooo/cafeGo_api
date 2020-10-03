@@ -1,4 +1,4 @@
-package co.kr.cafego.admin;
+package co.kr.cafego.admin.login;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +50,6 @@ public class LoginController extends ApiSupport {
 		
 		Map<String, String> paramMap = new HashMap<String, String>();
 		try {
-//			logWrite(LoggerCode.INFO, "Start Login Process");
 			// 어드민 아이디
 			String adminId  = (String)request.getParameter("adminId");
 			//어드민 비밀번호
@@ -58,8 +57,7 @@ public class LoginController extends ApiSupport {
 			
 			if(StringUtils.isBlank(adminId) || StringUtils.isBlank(adminPwd)){
 				throw new ApiException("997", "입력파라미터가 부족합니다.");
-			} 
-			
+			}
 			
 			paramMap.put("adminId",  adminId);
 			paramMap.put("adminPwd", adminPwd);

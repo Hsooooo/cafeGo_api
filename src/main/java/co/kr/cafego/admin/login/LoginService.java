@@ -1,4 +1,4 @@
-package co.kr.cafego.admin;
+package co.kr.cafego.admin.login;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.kr.cafego.admin.model.LoginModel;
+import co.kr.cafego.admin.login.model.LoginModel;
 import co.kr.cafego.common.exception.ApiException;
 import co.kr.cafego.common.util.DataCode;
 import co.kr.cafego.common.util.ResultCode;
