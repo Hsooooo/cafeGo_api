@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.kr.cafego.api.payment.PaymentMapper">
+
+	<!-- 주문서 정보 수정 -->
+	<update id="updateCartPayReady" parameterType="java.util.Map">
+		UPDATE CART_INFO 
+		   SET STATUS = '01'
+		 WHERE CART_NO = #{cartNo} 
+	</update>
+	
+	<!-- 결제 정보 저장 -->
+	<insert id="insertPaymentInfo" parameterType="java.util.Map">
+		INSERT INTO PAYMENT_INFO(
+			  cart_no
+			, member_num
+			, store_code
+			, payment_amt
+			, tid
+			, status
+			, pay_method
+			, pay_date
+		)
+		VALUES(
+			  #{cartNo}
+			, #{memberNum}
+			, #{storeCode}
+			, #{paymentAmt}
+			, #{tid}
+			, #{payStatus}
+			, #{payMethod}
+			, SYSDATE
+		)
+	</insert>
+	
+	<!-- 주문 가능한 주문서 정보 조회 -->
+	<select id="orderPossibleCartInfo" parameterType="java.util.Map" resultType="co.kr.cafego.api.cart.dto.CartInfoDto">
+		SELECT cart_no as cartNo
+			 , status as status
+		  FROM CART_INFO
+		 WHERE cart_no = #{cartNo} 
+		   AND status NOT IN ('02', '03')  
+	</select>
+	
+	<!-- 회원 포인트 잔액 변경 -->
+	<update id="updateMemberPoint" parameterType="java.util.Map">
+		UPDATE MEMBER_POINT 
+		   SET POINT = POINT - #{pointAmt}
+		   	 , UPDATE_DATE = SYSDATE
+		 WHERE MEMBER_NUM = #{memberNum} 
+	</update>
+	
+	<!-- 회원 포인트 변경 이력 저장 -->
+	<insert id="insertMemberPointHist" parameterType="java.util.Map">
+		<selectKey resultType="java.lang.String" keyProperty="pointHistSeq" order="BEFORE">
+			SELECT LPAD(SEQ_POINT_HISTORY.NEXTVAL, 6, '0') FROM dual
+		</selectKey>
+		INSERT INTO MEMBER_POINT_HISTORY(
+			  history_seq
+			, member_num
+			, point_amt
+			, use_type
+		)
+		VALUES(
+			  #{today}||#{pointHistSeq}
+			, #{memberNum}
+			, -#{pointAmt}
+			, #{useType}
+		)
+	</insert>
+	
+</mapper>

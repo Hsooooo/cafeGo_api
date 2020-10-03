@@ -99,7 +99,8 @@ public class ReturnObject {
 			setResultCode(response, resultCode);
 			setResultMessage(response, getMessage(resultCode, ""));
 		}catch(Exception e){
-			LOGGER.info("[결과 코드/메세지 설정] 오류 : " + e.getMessage().replaceAll("\n|\r", ""));
+//			LOGGER.info("[결과 코드/메세지 설정] 오류 : " + e.getMessage().replaceAll("\n|\r", ""));
+			LOGGER.info("Exception -> " , e);
 			response.setHeader(env.getProperty("header.result.code", "resultCode").replaceAll("\n|\r", ""), "0099");
 			
 			try{
@@ -202,7 +203,10 @@ public class ReturnObject {
 	 */
 	public void setResultMessage(HttpServletResponse response, String resultMessage){
 		try{
-			response.setHeader(env.getProperty("header.result.message", "resultMessage").replaceAll("\n|\r", ""), URLEncoder.encode(resultMessage, "UTF-8"));
+			LOGGER.info("############ TEST ###" + env.getProperty("header.result.message", "resultMessage"));
+			LOGGER.info("############ TEST ###" + resultMessage);
+			
+			response.setHeader(env.getProperty("header.result.message", "resultMessage"), URLEncoder.encode(resultMessage, "UTF-8"));
 		}catch(UnsupportedEncodingException e){
 			LOGGER.error(e.getMessage().replaceAll("\n|\r", ""));
 		}

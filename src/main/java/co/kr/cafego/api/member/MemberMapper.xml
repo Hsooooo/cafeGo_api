@@ -6,24 +6,29 @@
 	<!-- 회원 보유 포인트 정보 조회(예시) -->
 	<select id="getMemberPointInfo" parameterType="java.util.Map" resultType="co.kr.cafego.api.member.dto.MemberPointInfoDto">
 		SELECT member.*
-		  FROM (SELECT cm.member_num	as memberNum
-			 		 , cm.member_name	as memberName
-			 		 , cm.member_sex	as memberSex
-			 		 , cm.member_phone	as memberPhone
-			 		 , cm.member_email	as memberEmail
-			 		 , cm.join_flag		as joinFlag
-			 		 , cm.member_status as status
-			 		 , cmp.point		as point
-			 		 , (CASE WHEN cwi.wd_date >= TO_CHAR(SYSDATE+7, 'YYYYMMDD')
+		  FROM (SELECT mi.member_num	as memberNum
+			 		 , mi.member_name	as memberName
+			 		 , mi.member_sex	as memberSex
+			 		 , mi.member_phone	as memberPhone
+			 		 , mi.member_email	as memberEmail
+			 		 , mi.join_flag		as joinFlag
+			 		 , mi.member_status as status
+			 		 , mp.point		as point
+			 		 , (CASE WHEN mwi.wd_date >= TO_CHAR(SYSDATE+7, 'YYYYMMDD')
 			 		 		 THEN 'Y'
 			 		 		 ELSE 'N'
 			 		 	END) 			as wdYn
-				  FROM CAFE_MEMBER cm
-				     , CAFE_MEMBER_POINT cmp
-				     , CAFE_WITHDRAWAL_INFO cwi
-				 WHERE cm.member_num = cmp.member_num
-				   AND cm.member_num = cwi.member_num(+) 	 
-				   AND cm.member_email = #{email}
+				  FROM MEMBER_INFO mi
+				     , MEMBER_POINT mp
+				     , MEMBER_WITHDRAWAL_INFO mwi
+				 WHERE mi.member_num = mp.member_num
+				   AND mi.member_num = mwi.member_num(+)
+				   <if test="email != null and email != ''">
+				   AND mi.member_email = #{email}
+				   </if>
+				   <if test="memberNum != null and memberNum != ''">
+				   AND mi.member_num = #{memberNum}
+				   </if>
 				) member
 		 	WHERE member.wdYn = 'N'
 	</select>
@@ -50,13 +55,30 @@
 			, 'O' 
 		)
 	</insert>
-
-	<!-- 로그인 -->
-	<select id="getLogin" parameterType="java.util.Map">
-		SELECT *
-		  FROM ADMIN_USER
-		 WHERE ADMIN_ID = #{adminId}
-		   AND ADMIN_PW = #{adminPw} 
+	
+	<!-- 중복 카드 조회 -->
+	<select id="memberCardDupCheck" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		  FROM MEMBER_CARD_INFO
+		 WHERE CARD_NUM = #{cardNum} 
 	</select>
+	
+	<!-- 회원 카드 등록 -->
+	<insert id="regMemberCard" parameterType="java.util.Map">
+		INSERT INTO MEMBER_CARD_INFO(
+				member_num
+			  , card_num
+			  , amount
+			  , status	
+			  , reg_date
+		)
+		VALUES(
+				#{memberNum}
+			  , #{cardNum}
+			  , #{amount}
+			  , #{status}
+			  , SYSDATE	
+		)
+	</insert>
 	
 </mapper>

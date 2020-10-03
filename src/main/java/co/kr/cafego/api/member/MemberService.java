@@ -1,5 +1,10 @@
 package co.kr.cafego.api.member;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import co.kr.cafego.api.member.dto.MemberPointInfoDto;
 import co.kr.cafego.api.member.model.MemberBasicInfoModel;
 import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.AppFunction;
 import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.core.support.ApiSupport;
 
@@ -46,9 +52,9 @@ public class MemberService extends ApiSupport{
 			// -> 지금은 무조건 false로 리턴하기때문에 ApiException 발생하지 않음
 			// -> but ApiException 발생시 현재 메서드 최상단에 rollbackFor로 잡힌 클래스가
 			//    ApiException도 같이 있으므로 발생하게 되면 롤백 수행
-			if(validateSample()) {
-				throw new ApiException(ResultCode.EXT_01);
-			}
+//			if(validateSample()) {
+//				throw new ApiException(ResultCode.EXT_01);
+//			}
 			
 			// setp 2. DB 저장
 			// -> 지금은 회원 가입시 들어갈 정보가 회원 정보 테이블 하나이기 때문에 복잡하지 않음
@@ -100,16 +106,36 @@ public class MemberService extends ApiSupport{
 		return model;
 	}
 	
-	
-	public Object loginSign(Map<String, String> paramMap) {
+	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class, SQLException.class})
+	public Object memberCardReg(Map<String, String> paramMap) {
+		Map<String, Object> dbMap = new HashMap<String, Object>();
+		try {
+			String memberNum = paramMap.get("memberNum");
+			
+			boolean cardDup = true;
+			String cardNum = "";
+			
+			while(cardDup) {
+				String tmpCardNum = AppFunction.getMemberCardNum();
+				dbMap.put("cardNum", tmpCardNum);
+				int dupCnt = memberMapper.memberCardDupCheck(dbMap);
+				
+				if(dupCnt == 0) {
+					cardDup = false;
+					cardNum = tmpCardNum;
+					dbMap.put("memberNum", memberNum);
+					dbMap.put("cardNum",   cardNum);
+					dbMap.put("amount",    0);
+					dbMap.put("status",    "00");
+					
+					int regCnt = memberMapper.regMemberCard(dbMap);
+				}
+			}
+		}catch(ApiException ae) {
+			
+		}
 		
-		
-		
-		return model;
+		return null;
 	}
 	
-	
-	private boolean validateSample() {
-		return false;
-	}
 }

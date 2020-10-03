@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
+import co.kr.cafego.common.exception.ApiException;
 import co.kr.cafego.core.support.ApiSupport;
 
 
@@ -52,33 +52,26 @@ public class MemberController extends ApiSupport {
 		return obj;
 		
 	}
-
-	/**
-	 * 1.2. 로그인 (ADMIN 로그인)
-	 * @param headers
-	 * @param request
-	 * @return
-	 */
 	
-	public Object login(@RequestHeader HttpHeaders headers, HttpServletRequest request
-			, HttpServletResponse response, Model mode) {
-		
+	@RequestMapping(value="/memberCardReg.do", method=RequestMethod.POST)
+	public Object memberCardReg(@RequestHeader HttpHeaders headers, HttpServletRequest request
+			, HttpServletResponse response, Model model) {
 		Object obj = null;
 		Map<String, String> paramMap = new HashMap<String, String>();
 		
-		String adminId = "";
-		String adminPw = "";
-		// 어드민 아이디
-		adminId = ((String)request.getParameter("adminId"));
-		//어드민 비밀번호
-		adminPw = ((String)request.getParameter("adminPw"));
+		@SuppressWarnings("unchecked")
+		Map<String, Object> parameters = (Map<String, Object>) request.getAttribute("bodyMap");
 		
-		paramMap.put("adminId", adminId);
-		paramMap.put("adminPw", adminPw);
+		try {
+			String memberNum  = (String) parameters.get("memberNum");
+			
+			paramMap.put("memberNum", memberNum);
+			obj = memberService.memberCardReg(paramMap);
 		
-		
-		obj = memberService.loginSign(paramMap);
-		
+		}catch(ApiException ae) {
+			
+		}
 		return obj;
+		
 	}
 }

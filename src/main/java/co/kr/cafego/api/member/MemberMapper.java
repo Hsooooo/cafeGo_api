@@ -19,4 +19,18 @@ public interface MemberMapper {
 	 * @return
 	 */
 	public int memberJoin(Map<String, Object> dbMap);
+	
+	/**
+	 * 중복 카드 체크
+	 * @param dbMap
+	 * @return
+	 */
+	public int memberCardDupCheck(Map<String, Object> dbMap);
+
+	/**
+	 * 회원 카드 등록
+	 * @param dbMap
+	 * @return
+	 */
+	public int regMemberCard(Map<String, Object> dbMap);
 }

@@ -1,12 +1,10 @@
 package co.kr.cafego.core.config;
 
-import java.security.Security;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -22,19 +20,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.number.NumberFormatter;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import co.kr.cafego.BasePackageMarker;
-import co.kr.cafego.common.interceptor.ApiAuthInterceptor;
 import co.kr.cafego.common.interceptor.ReqJsonMappingInterceptor;
 import co.kr.cafego.common.util.MessageUtil;
 import co.kr.cafego.common.util.ReturnObject;
@@ -83,7 +79,7 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	public void postConstruct() {
 		SystemEnviroment.setActiveProfile(env.getActiveProfiles()[0]);
 		//DH keypair Error fix
-		Security.addProvider(new BouncyCastleProvider());
+//		Security.addProvider(new BouncyCastleProvider());
 	}
 	/**************************************** Bean definition ?��?�� ****************************************/
 	@Bean
@@ -102,7 +98,6 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	public MappingJackson2JsonView jsonView(){
 		MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
 		jsonView.setModelKey("app");
-		jsonView.setPrettyPrint(getJsonPrettyPrint());
 		return jsonView;
 	}
 	
@@ -151,7 +146,7 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new ApiAuthInterceptor(env));			//api ?��증�??�� 체크
+//		registry.addInterceptor(new ApiAuthInterceptor(env));			//api ?��증�??�� 체크
 		registry.addInterceptor(new ReqJsonMappingInterceptor(env));	//json object mapping
 //		registry.addInterceptor(new TokenKeyCheckInterceptor(env, authMapper, hpOauthMapper));
 	}
@@ -165,16 +160,16 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	/****************************** WebMvcConfigurerAdapter overriding ?�� ******************************/
 	
 	//LocalValidatorFactoryBean?? ?��?��?��?��?�� ?��?�� JSR-303 구현체�? �??��?�� ?��?��브러리�?? �??��?��?�� Validator�? ?��?��?���? �??��?��주는 ?��?��?�� ?��?��?��?��.
-	@Bean
-	public LocalValidatorFactoryBean localValidatorFactoryBean() {
-		return new LocalValidatorFactoryBean();
-	}
-	@Bean
-	public MethodValidationPostProcessor methodValidationPostProcessor(){
-		return new MethodValidationPostProcessor();
-	}
-	@Override
-	protected boolean getJsonPrettyPrint() {
-		return envw.getProperty("json.prettyPrint", Boolean.class, Boolean.TRUE);
-	}
+//	@Bean
+//	public LocalValidatorFactoryBean localValidatorFactoryBean() {
+//		return new LocalValidatorFactoryBean();
+//	}
+//	@Bean
+//	public MethodValidationPostProcessor methodValidationPostProcessor(){
+//		return new MethodValidationPostProcessor();
+//	}
+//	@Override
+//	protected boolean getJsonPrettyPrint() {
+//		return envw.getProperty("json.prettyPrint", Boolean.class, Boolean.TRUE);
+//	}
 }

@@ -28,7 +28,7 @@ import net.minidev.json.JSONObject;
 
 @Controller
 public class ReqJsonMappingInterceptor extends HandlerInterceptorAdapter {
-	private final Logger logger = LoggerFactory.getLogger("INFO");
+	private final Logger logger = LoggerFactory.getLogger("API");
 	
 	private Environment env;
 	
@@ -62,26 +62,15 @@ public class ReqJsonMappingInterceptor extends HandlerInterceptorAdapter {
 					sb.append(line);
 					line = br.readLine();
 				}
-				logger.info("==========================================================================");
-				if(!"/auth/login.do".equals(request.getServletPath())) {
-					logger.info("Request jsonBody >>> " + sb.toString().replaceAll("\n|\r", ""));
-					raw = this.XSScheck(sb.toString());
-				} else {
-					raw = sb.toString();
-				}
 				
+				logger.info("==========================================================================");
+				logger.info("Request jsonBody >>> " + sb.toString().replaceAll("\n|\r", ""));
+				raw = this.XSScheck(sb.toString());
 				// Request Body부분이 존재하는 경우만 매핑
 				//======================================================================================
 				// 2. population bodyMap
 				//======================================================================================
-				if (StringUtils.isNotEmpty(raw)) {				
-					if(StringUtils.isNotBlank(raw)) {
-						Map<String, Object> tmpMap = new Gson().fromJson(raw, Map.class);
-						bodyMap = tmpMap;
-					}
-				}else{
-					bodyMap = new HashMap<String, Object>();
-				}
+				bodyMap = new Gson().fromJson(raw, Map.class);
 				
 				
 				logger.info("Request bodyMap >>> " + bodyMap.toString().replaceAll("\n|\r", ""));

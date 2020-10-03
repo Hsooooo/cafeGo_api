@@ -24,8 +24,9 @@ import co.kr.cafego.common.util.ParamUtils;
 @Component
 @Aspect
 public class CommonLogAspect {
-	private static final Logger LOGGER  = LoggerFactory.getLogger("INFO");
+	private static final Logger MLOGGER  = LoggerFactory.getLogger("ADMIN");
 	private static final Logger RLOGGER = LoggerFactory.getLogger("RESULT");
+	private static final Logger ALOGGER  = LoggerFactory.getLogger("API");
 	
 	@Around("execution(* co.kr.cafego..*Controller.*(..))")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable{
@@ -37,18 +38,24 @@ public class CommonLogAspect {
 		String methodName = joinPoint.getSignature().getName();
 		String fullPkgName = joinPoint.getTarget().getClass().getPackage().getName();
 		String[] fullPkgArr = StringUtils.split(fullPkgName,'.');
-		String pkgName = fullPkgArr[fullPkgArr.length-1];
+		String pkgName = fullPkgArr[3];
 		
 		try{
 			watch.start();
 
 			this.logPreWrite(request, pkgName);
-			LOGGER.info("[{}] {}", className+":"+methodName, "########## START ##########");
-			
+			if(StringUtils.equals(pkgName, "api")) {
+				ALOGGER.info("[{}] {}", className+":"+methodName, "########## START ##########");
+			}else if(StringUtils.equals(pkgName, "admin")){
+				MLOGGER.info("[{}] {}", className+":"+methodName, "########## START ##########");
+			}
 			obj = joinPoint.proceed();
 		}finally{
-			LOGGER.info("[{}] {}", className+":"+methodName, "########## END ##########");
-			
+			if(StringUtils.equals(pkgName, "api")) {
+				ALOGGER.info("[{}] {}", className+":"+methodName, "########## END ##########");
+			}else if(StringUtils.equals(pkgName, "admin")){
+				MLOGGER.info("[{}] {}", className+":"+methodName, "########## END ##########");
+			}
 			watch.stop();
 			this.logCompletedWrite(request, watch, pkgName);
 		}
@@ -64,16 +71,25 @@ public class CommonLogAspect {
 		StopWatch watch   = new StopWatch();
 		String className  = joinPoint.getTarget().getClass().getSimpleName();
 		String methodName = joinPoint.getSignature().getName();
-		
+		String fullPkgName = joinPoint.getTarget().getClass().getPackage().getName();
+		String[] fullPkgArr = StringUtils.split(fullPkgName,'.');
+		String pkgName = fullPkgArr[3];
 		try{
 			watch.start();
-			LOGGER.info("[{}] {}", className, "----- START ["+methodName+"] -----");
-			
+			if(StringUtils.equals(pkgName, "api")) {
+				ALOGGER.info("[{}] {}", className, "----- START ["+methodName+"] -----");
+			}else if(StringUtils.equals(pkgName, "admin")){
+				MLOGGER.info("[{}] {}", className, "----- START ["+methodName+"] -----");
+			}
 
 			obj = joinPoint.proceed();
 		}finally{
 			watch.stop();
-			LOGGER.info("[{}] {}", className, "----- END ["+methodName+"](" + watch.toString() + ") -----");
+			if(StringUtils.equals(pkgName, "api")) {
+				ALOGGER.info("[{}] {}", className, "----- END ["+methodName+"](" + watch.toString() + ") -----");
+			}else if(StringUtils.equals(pkgName, "admin")){
+				MLOGGER.info("[{}] {}", className, "----- END ["+methodName+"](" + watch.toString() + ") -----");
+			}
 
 		}
 		
@@ -126,24 +142,45 @@ public class CommonLogAspect {
 	}
 	
 	private void logPreWrite(HttpServletRequest request, String pkgName) {
-		LOGGER.info("Connected: [{}][{}][{}|{}][{}]", 
-				request.getRemoteAddr(),
-				(String) request.getAttribute("userId"),
-				request.getScheme(), 
-				getMethod(request),				
-				request.getRequestURI()
-		);
+		if(StringUtils.equals(pkgName, "api")) {
+			ALOGGER.info("Connected: [{}][{}][{}|{}][{}]", 
+					request.getRemoteAddr(),
+					(String) request.getAttribute("userId"),
+					request.getScheme(), 
+					getMethod(request),				
+					request.getRequestURI()
+			);
+		}else if(StringUtils.equals(pkgName, "admin")){
+			MLOGGER.info("Connected: [{}][{}][{}|{}][{}]", 
+					request.getRemoteAddr(),
+					(String) request.getAttribute("userId"),
+					request.getScheme(), 
+					getMethod(request),				
+					request.getRequestURI()
+			);
+		}
 		
 	}
 	private void logCompletedWrite(HttpServletRequest request, StopWatch watch, String pkgName) {
-		LOGGER.info("Completed: [{}][{}][{}|{}][{}]({})", 
-				request.getRemoteAddr(),
-				(String) request.getAttribute("userId"),
-				request.getScheme(), 
-				getMethod(request),				
-				request.getRequestURI(),
-				watch.toString()
-		);
+		if(StringUtils.equals(pkgName, "api")) {
+			ALOGGER.info("Completed: [{}][{}][{}|{}][{}]({})", 
+					request.getRemoteAddr(),
+					(String) request.getAttribute("userId"),
+					request.getScheme(), 
+					getMethod(request),				
+					request.getRequestURI(),
+					watch.toString()
+			);
+		}else if(StringUtils.equals(pkgName, "admin")){
+			ALOGGER.info("Completed: [{}][{}][{}|{}][{}]({})", 
+					request.getRemoteAddr(),
+					(String) request.getAttribute("userId"),
+					request.getScheme(), 
+					getMethod(request),				
+					request.getRequestURI(),
+					watch.toString()
+			);
+		}
 	}
 	
 	private String getMethod(HttpServletRequest request) {
