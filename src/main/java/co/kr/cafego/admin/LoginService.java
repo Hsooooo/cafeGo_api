@@ -7,10 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.kr.cafego.common.util.DataCode;
 import co.kr.cafego.admin.model.LoginModel;
-import co.kr.cafego.api.member.MemberMapper;
 import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.DataCode;
 import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.core.support.ApiSupport;
 

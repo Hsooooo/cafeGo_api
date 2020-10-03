@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.kr.cafego.api.member.MemberService;
 import co.kr.cafego.common.exception.ApiException;
 import co.kr.cafego.common.util.ReturnObject;
 import co.kr.cafego.core.support.ApiSupport;
