@@ -68,7 +68,7 @@ public class DatabaseConfig{
 		factoryBean.setDataSource(dataSource());
 		
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		Resource[] resources = resolver.getResources("classpath*:co/kr/cafego/api/**/*Mapper.xml");
+		Resource[] resources = resolver.getResources(getMapperLocationPattern());
 		factoryBean.setMapperLocations(resources);
 		factoryBean.setConfigLocation(resolver.getResource(getConfigLocation()));
         factoryBean.setConfigurationProperties(getConfigurationProperties());
@@ -103,13 +103,13 @@ public class DatabaseConfig{
 	public MapperScannerConfigurer mapperScannerConfigurer(){
 		MapperScannerConfigurer mc = new MapperScannerConfigurer();
 		mc.setNameGenerator(new CafegoBeanNameGenerator());
-		mc.setBasePackage("co.kr.cafego.api.**");
+		mc.setBasePackage("co.kr.cafego.admin.**");
 		mc.setSqlSessionFactoryBeanName("sqlSessionFactory");
 		return mc;
 	}
 	
 	protected String getMapperLocationPattern() {
-		return "classpath:co/kr/cafego/api/**/*Mapper.xml";
+		return "classpath:co/kr/cafego/admin/**/*Mapper.xml";
 	}
 	
 	protected String getConfigLocation() {
