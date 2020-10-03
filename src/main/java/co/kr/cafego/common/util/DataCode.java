@@ -97,6 +97,11 @@ public final class DataCode {
 	
 	public static final String PAY_STATUS_SUCCESS = "00";
 	
-
+	
+	/**   관리자 로그인 	 */
+	// Y : 관리자 정보 있으며 로그인 성공, N : 관리자 정보 없으며 로그인 성공
+	public static final String LOGIN_SUCESS = "Y";
+	
+	public static final String LOGIN_FAIL = "N";
 	
 }

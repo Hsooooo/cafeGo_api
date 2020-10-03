@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="co.kr.cafego.api.login.LoginMapper">
+
+
+	<!-- 관리자 정보 조회(예시) -->
+	<select id="getLoginMemberInfo" parameterType="java.util.Map" resultType="co.kr.cafego.api.login.dto.LoginModel">
+		SELECT * 
+  		  FROM ADMIN_MEMBER_INFO
+	</select>
+		
+	<!-- 관리자 로그인 정보 -->
+	<select id="loginInfo" parameterType="java.util.Map" resultType="co.kr.cafego.api.login.dto.LoginModel">
+		SELECT ADMIN_ID			as adminId
+		     , ADMIN_PWD		as adminPwd
+		     , STORE_NAME		as storeName
+		     , STORE_CODE		as storeCode
+		     , LOGIN_DATE		as loginDate
+  		  FROM ADMIN_MEMBER_INFO
+  		 WHERE ADMIN_ID = #{adminId}
+	</select>
+	
+	<!-- 로그인 성공 접속 시간 업데이트 -->
+	<select id="loginScsUpdate" parameterType="java.util.Map" resultType="co.kr.cafego.api.login.dto.LoginModel">
+		UPDATE ADMIN_MEMBER_INFO
+		   SET LOGIN_DATE = SYSDATE
+		 WHERE ADMIN_ID   = #{adminId}
+		   AND ADMIN_PWD  = #{adminPwd}
+	</select>
+	
+	
+</mapper>

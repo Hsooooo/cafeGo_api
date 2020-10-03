@@ -212,6 +212,27 @@ public class ReturnObject {
 		}
 	}
 	
+	/**
+	 * 접속 IP 획득
+	 * @param request
+	 * @return
+	 */
+	public String getIp(HttpServletRequest request){
+		String ip = request.getHeader("X-FORWARDED-FOR"); 
+		 if (StringUtils.isBlank(ip)) {
+			 ip = request.getHeader("Proxy-Client-IP");
+	     }
+	     if (StringUtils.isBlank(ip)) {
+	         ip = request.getHeader("WL-Proxy-Client-IP");  // 웹로직
+	     }
+	     if (StringUtils.isBlank(ip)) {
+	         ip = request.getRemoteAddr() ;
+	     }
+	     return ip;
+	}
+	
+
+	
 	public View getJsonView() { return jsonView; }
 	public void setJsonView(View jsonView) { this.jsonView = jsonView; }
 	public Environment getEnv() { return env; }
