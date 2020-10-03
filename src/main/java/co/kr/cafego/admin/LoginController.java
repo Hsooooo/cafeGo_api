@@ -1,4 +1,4 @@
-package co.kr.cafego.api.login;
+package co.kr.cafego.admin;
 
 import java.util.HashMap;
 import java.util.Map;

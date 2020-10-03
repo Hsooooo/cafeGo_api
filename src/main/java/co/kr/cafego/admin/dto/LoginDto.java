@@ -1,4 +1,4 @@
-package co.kr.cafego.api.login.dto;
+package co.kr.cafego.admin.dto;
 
 import java.sql.Date;
 

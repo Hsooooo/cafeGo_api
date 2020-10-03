@@ -1,8 +1,8 @@
-package co.kr.cafego.api.login;
+package co.kr.cafego.admin;
 
 import java.util.Map;
 
-import co.kr.cafego.api.login.dto.LoginDto;
+import co.kr.cafego.admin.dto.LoginDto;
 
 public interface LoginMapper {
 

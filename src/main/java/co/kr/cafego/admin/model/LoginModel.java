@@ -1,4 +1,4 @@
-package co.kr.cafego.api.login.model;
+package co.kr.cafego.admin.model;
 
 import java.sql.Date;
 
