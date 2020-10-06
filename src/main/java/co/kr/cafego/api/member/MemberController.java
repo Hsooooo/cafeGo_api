@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.kr.cafego.api.member.model.MemberBasicInfoModel;
 import co.kr.cafego.common.exception.ApiException;
 import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.common.util.ReturnObject;
@@ -101,7 +102,7 @@ public class MemberController extends ApiSupport {
 	@RequestMapping(value="/login.do", method=RequestMethod.POST)
 	public Object paymentList(@RequestHeader HttpHeaders headers, HttpServletRequest request
 			, HttpServletResponse response, Model model) {
-		
+		MemberBasicInfoModel memberModel = new MemberBasicInfoModel();
 		Object obj = null;
 		Map<String, String> paramMap = new HashMap<String, String>();
 		
@@ -121,7 +122,8 @@ public class MemberController extends ApiSupport {
 			paramMap.put("memberPwd",   memberPwd);
 			paramMap.put("joinFlag", joinFlag);
 			
-			obj = memberService.emailLogin(paramMap, request);
+			memberModel = memberService.emailLogin(paramMap, request);
+			obj = ro.getObject(request, headers, model, memberModel);
 			ro.setResult(response, ResultCode.SUCCESS);
 		}catch(ApiException ae) {
 			logger.error("[{}][{}] ApiException", " 로그인", ae.getResultMessage());
