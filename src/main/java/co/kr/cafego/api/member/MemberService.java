@@ -1,20 +1,26 @@
 package co.kr.cafego.api.member;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.kr.cafego.api.member.dto.MemberInfoDto;
 import co.kr.cafego.api.member.dto.MemberPointInfoDto;
 import co.kr.cafego.api.member.model.MemberBasicInfoModel;
+import co.kr.cafego.api.payment.PaymentMapper;
 import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.AppFunction;
+import co.kr.cafego.common.util.DataCode;
+import co.kr.cafego.common.util.DateTime;
 import co.kr.cafego.common.util.ResultCode;
+import co.kr.cafego.common.util.SHA256;
 import co.kr.cafego.core.support.ApiSupport;
 
 /**
@@ -27,6 +33,118 @@ public class MemberService extends ApiSupport{
 
 	@Autowired
 	private MemberMapper memberMapper;
+	
+	@Autowired
+	private PaymentMapper paymentMapper;
+	
+	/**
+	 * 1.1. 회원 가입(일반 회원가입)
+	 * @param paramMap
+	 * @return
+	 */
+	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class, SQLException.class})
+	public Object emailJoin(Map<String, String> paramMap) throws Exception{
+		Map<String, Object> dbMap = new HashMap<String, Object>();
+		
+		String memberName  = paramMap.get("memberName");
+		String memberSex   = paramMap.get("memberSex");
+		String memberPhone = paramMap.get("memberPhone");
+		String memberEmail = paramMap.get("memberEmail");
+		String joinFlag    = paramMap.get("joinFlag");
+		String encPwd	   = paramMap.get("memberPwd");
+		String testPwd	   = paramMap.get("testPwd");
+		
+		try {
+			String today = DateTime.getCurrentDate(1);		//yyyyMMddHHmm
+			
+			String decryptPwd = "";
+//			decryptPwd = AES256.decrypt(encPwd);
+			decryptPwd = testPwd;
+			
+			String dbPwd = SHA256.encrypt(decryptPwd);
+			
+			dbMap.put("memberName",  memberName);
+			dbMap.put("memberSex",   memberSex);
+			dbMap.put("memberPhone", memberPhone);
+			dbMap.put("memberEmail", memberEmail);
+			dbMap.put("joinFlag",    joinFlag);
+			dbMap.put("dbPwd", 		 dbPwd);
+			dbMap.put("status", 	 DataCode.MEMBER_STATUS_NORMAL);
+			
+			//등록된 회원이 있는지 조회 (가입 경로도 같이 조회해야함
+			// -> 일반 회원가입과 카카오 로그인의 경우 이메일이 같을..수있음)
+			MemberInfoDto memberDto = memberMapper.getMemberInfoByEmail(dbMap);
+			
+			if(memberDto != null) {
+				throw new ApiException(ResultCode.MEM_02, "이미 등록된 회원 정보가 있습니다.");
+			}
+			
+			int a = memberMapper.regMember(dbMap);
+			
+			if(a > 0){
+				//회원 가입된 회원번호 조회
+				memberDto = memberMapper.getMemberInfoByEmail(dbMap);
+				
+				dbMap.put("memberNum", memberDto.getMemberNum());
+				dbMap.put("pointAmt",  500); //가입 기념 500P
+				dbMap.put("useType",   DataCode.MEMBER_POINT_TYPE_JOIN);  
+				dbMap.put("today", 	   today);
+				
+				memberMapper.regMemberPointInfo(dbMap);
+				
+				paymentMapper.insertMemberPointHist(dbMap);
+			}
+		}catch(ApiException ae) {
+			throw ae;
+		}catch(Exception e) {
+			throw e;
+		}
+		return null;
+	}
+	
+	/**
+	 * Email로 로그인(일반 로그인)
+	 * @param paramMap
+	 * @param request
+	 * @return
+	 */
+	public Object emailLogin(Map<String, String> paramMap, HttpServletRequest request) throws Exception {
+		Map<String, Object> dbMap = new HashMap<String, Object>();
+		
+		String memberEmail = paramMap.get("memberEmail");
+		String memberPwd   = paramMap.get("memberPwd");
+		String joinFlag    = paramMap.get("joinFlag");
+		try {
+			
+			//Email로 회원 정보 조회
+			dbMap.put("memberEmail", memberEmail);
+			dbMap.put("joinFlag",    joinFlag);
+			MemberInfoDto memberInfoDto = memberMapper.getMemberInfoByEmail(dbMap);
+			
+			//전달받은 pwd SHA256 암호화(AES256 복호화 필요 ** 테스트할 경우 일반 Text로 받음)
+			String dbPwd = SHA256.encrypt(memberPwd);
+			
+			//정상 로그인 성공시
+			if(StringUtils.equals(dbPwd, memberInfoDto.getMemberPwd()) && memberInfoDto.getFailCnt() <= 10){
+				//로그인 성공시 Session에 회원 정보 저장
+				request.getSession().setAttribute(DataCode.MEMBER_SESSION_NAME, memberInfoDto);
+			}
+			//로그인 실패 횟수가 10회 이상일 경우
+			else if(memberInfoDto.getFailCnt() > 10) {
+
+				throw new ApiException(ResultCode.MEM_04, "로그인 실패 횟수 초과(패스워드 재설정 필요)");
+			}
+			//전달받은 pwd를 암호화한 값이 DB에 저장된 pwd값과 다를 경우
+			else if(!StringUtils.equals(dbPwd, memberInfoDto.getMemberPwd())) {
+				int a = memberMapper.updateFailCnt(dbMap);
+				throw new ApiException(ResultCode.MEM_03, "패스워드가 일치하지 않습니다.");
+			}
+		}catch(ApiException ae) {
+			throw ae;
+		}
+		return null;
+	}
+
 	
 	/**
 	 * 1.1. 회원 가입(일반 회원가입)
@@ -104,30 +222,37 @@ public class MemberService extends ApiSupport{
 		return model;
 	}
 	
-	
-	private static void dbTest() {
-		String url = "jdbc:oracle:thin@211.47.118.87:1522:xe";
-		String sql = "SELECT 1 from dual";
-		Connection conn = null;
-		Statement st = null;
-		ResultSet rs = null;
-		
+	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class, SQLException.class})
+	public Object memberCardReg(Map<String, String> paramMap) {
+		Map<String, Object> dbMap = new HashMap<String, Object>();
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("driver Load Comp");
-			conn = DriverManager.getConnection(url,"spring_test", "spring_test");
-			System.out.println("DB Conn");
+			String memberNum = paramMap.get("memberNum");
 			
+			boolean cardDup = true;
+			String cardNum = "";
 			
-		}catch(Exception e) {
+			while(cardDup) {
+				String tmpCardNum = AppFunction.getMemberCardNum();
+				dbMap.put("cardNum", tmpCardNum);
+				int dupCnt = memberMapper.memberCardDupCheck(dbMap);
+				
+				if(dupCnt == 0) {
+					cardDup = false;
+					cardNum = tmpCardNum;
+					dbMap.put("memberNum", memberNum);
+					dbMap.put("cardNum",   cardNum);
+					dbMap.put("amount",    0);
+					dbMap.put("status",    "00");
+					
+					int regCnt = memberMapper.regMemberCard(dbMap);
+				}
+			}
+		}catch(ApiException ae) {
 			
 		}
 		
+		return null;
 	}
 	
-	public static void main(String args[]) {
-		MemberService s = new MemberService();
-		
-		s.dbTest();
-	}
+	
 }

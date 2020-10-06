@@ -2,8 +2,6 @@ package co.kr.cafego.common.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
@@ -13,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class AES256 {	
 //	private static final Logger logger = LoggerFactory.getLogger("INFO");
 	
-	//private static String KEY = "9IoSejwH76A5X1wqnGpy9R1W68Xtu3it";		//dev
 	private static String enckey = "U2sdVkX1+NYhA9Oq1dZGaYshRnQOrWsJ";		//real
 
 	private static SecretKeySpec getKeySpec() throws IOException,
@@ -48,36 +45,6 @@ public class AES256 {
 		return decrypt(text);
 	}
 
-	//전자영수증 관련 AES256
-	private static String receiptKey = "$TaRBUCK$R2C2iP+";
-	private static SecretKeySpec getKeySpecByReceipt() throws IOException, NoSuchAlgorithmException {
-		byte[] bytes = new byte[32];
-		SecretKeySpec spec = null;
-		bytes = receiptKey.getBytes();
-		spec = new SecretKeySpec(bytes, "AES");
-		return spec;
-	}
-	public static String receiptEncrypt(String text) throws Exception {
-		SecretKeySpec spec = getKeySpecByReceipt();
-		Cipher cipher = Cipher.getInstance("AES");
-		cipher.init(Cipher.ENCRYPT_MODE, spec);
-		return Base64Utils.base64Encode(cipher.doFinal(text.getBytes("UTF-8")));
-	}
-	public static String receiptDecrypt(String text) throws Exception {
-		SecretKeySpec spec = getKeySpecByReceipt();
-		Cipher cipher = Cipher.getInstance("AES");
-		cipher.init(Cipher.DECRYPT_MODE, spec);
-		return new String(cipher.doFinal(Base64Utils.base64Decode(text)), "UTF-8");
-	}
-	public static String receiptEncrypt(String text, String key) throws Exception {
-		receiptKey = key;
-		return receiptEncrypt(text);
-	}
-	
-	public static String receiptDecrypt(String text, String key) throws Exception {
-		receiptKey = key;
-		return receiptDecrypt(text);
-	}
 	
 	public static String stringToHex(String text) throws UnsupportedEncodingException{
 		StringBuilder sb = new StringBuilder();
@@ -102,35 +69,6 @@ public class AES256 {
 		return hr;
 	}
 
-	public static String receiptEncryptByHex(String text) throws Exception {
-		return stringToHex(receiptEncrypt(text));
-	}
-	
-	public static String receiptDecryptByString(String text) throws Exception {
-		return receiptDecrypt(hexToString(text));
-	}
-	
-	
-	/************************** 홀케익 히스토리 상세용 **************************/
-	/**
-	 * AES256 암호화 (암호화 후 URLEncode 처리)
-	 * @param text
-	 * @return
-	 * @throws Exception
-	 */
-	public static String encryptUrlEncode(String text) throws Exception {
-		return URLEncoder.encode(encrypt(text), "UTF-8");
-	}
-	
-	/**
-	 * AES256 복호화 (URLDecode 처리 후 복호화)
-	 * @param text
-	 * @return
-	 * @throws Exception
-	 */
-	public static String decryptUrlDecode(String text) throws Exception {
-		return decrypt(URLDecoder.decode(text, "UTF-8"));
-	}
 	/************************** 홀케익 히스토리 상세용 **************************/
 	
 	

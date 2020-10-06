@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import co.kr.cafego.BasePackageMarker;
+import co.kr.cafego.common.interceptor.ApiAuthInterceptor;
 import co.kr.cafego.common.interceptor.ReqJsonMappingInterceptor;
 import co.kr.cafego.common.util.MessageUtil;
 import co.kr.cafego.common.util.ReturnObject;
@@ -51,6 +53,7 @@ import co.kr.cafego.core.support.XssConverter;
 	TraceConfig.class
 })
 @EnableWebMvc
+@EnableAspectJAutoProxy
 @ComponentScan(basePackageClasses = {BasePackageMarker.class}, nameGenerator = CafegoBeanNameGenerator.class)
 public class ApplicationConfig extends AbstractApplicationConfig {
 	 
@@ -144,7 +147,7 @@ public class ApplicationConfig extends AbstractApplicationConfig {
 	 */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-//		registry.addInterceptor(new ApiAuthInterceptor(env));			//api ?��증�??�� 체크
+		registry.addInterceptor(new ApiAuthInterceptor(env));			//api ?��증�??�� 체크
 		registry.addInterceptor(new ReqJsonMappingInterceptor(env));	//json object mapping
 //		registry.addInterceptor(new TokenKeyCheckInterceptor(env, authMapper, hpOauthMapper));
 	}

@@ -36,6 +36,9 @@ public final class DateTime {
 		String format = null;
 		
 		switch(caseCode){
+			case 1:
+				format = "yyyyMMddHHmm";
+				break;
 			case 14:
 				format = "yyyyMMdd";
 				break;	
@@ -44,7 +47,7 @@ public final class DateTime {
 				break;
 			case 16:
 				format = "HH:mmssyyddMM";
-				break;				
+				break;
 			default:
 				format = "yyyy-MM-dd HH:mm:ss";
 				break;
