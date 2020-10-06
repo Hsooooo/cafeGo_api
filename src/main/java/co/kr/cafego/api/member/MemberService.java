@@ -108,7 +108,8 @@ public class MemberService extends ApiSupport{
 	 * @param request
 	 * @return
 	 */
-	public Object emailLogin(Map<String, String> paramMap, HttpServletRequest request) throws Exception {
+	public MemberBasicInfoModel emailLogin(Map<String, String> paramMap, HttpServletRequest request) throws Exception {
+		MemberBasicInfoModel model = new MemberBasicInfoModel();
 		Map<String, Object> dbMap = new HashMap<String, Object>();
 		
 		String memberEmail = paramMap.get("memberEmail");
@@ -139,10 +140,18 @@ public class MemberService extends ApiSupport{
 				int a = memberMapper.updateFailCnt(dbMap);
 				throw new ApiException(ResultCode.MEM_03, "패스워드가 일치하지 않습니다.");
 			}
+			model.setFailCnt(Integer.toString(memberInfoDto.getFailCnt()));
+			model.setMemberName(memberInfoDto.getMemberName());
+			model.setMemberNum(memberInfoDto.getMemberNum());
+			model.setMemberEmail(memberInfoDto.getMemberEmail());
+			model.setJoinFlag(memberInfoDto.getJoinFlag());
+			model.setMemberSex(memberInfoDto.getMemberSex());
+			model.setMemberPhone(memberInfoDto.getMemberPhone());
+			
 		}catch(ApiException ae) {
 			throw ae;
 		}
-		return null;
+		return model;
 	}
 
 	
