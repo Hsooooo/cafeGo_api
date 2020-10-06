@@ -28,7 +28,7 @@ import net.minidev.json.JSONObject;
 
 @Controller
 public class ReqJsonMappingInterceptor extends HandlerInterceptorAdapter {
-	private final Logger logger = LoggerFactory.getLogger("API");
+	private final Logger logger = LoggerFactory.getLogger("INFO");
 	
 	private Environment env;
 	
