@@ -19,7 +19,7 @@
 		</encoder>
 	</appender>
 	
-	<appender name="API" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>/cafeGo/log/api/if/api_if.%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>180</maxHistory>
@@ -30,7 +30,7 @@
 		</encoder>
 	</appender>
 	
-	<appender name="API_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>/cafeGo/log/api/error/api_error.%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>180</maxHistory>
@@ -44,30 +44,6 @@
 		</encoder>
 	</appender>
 	
-	<appender name="ADMIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>/cafeGo/log/admin/if/admin_if.%d{yyyy-MM-dd}.log</fileNamePattern>
-			<maxHistory>180</maxHistory>
-		</rollingPolicy>
-		<encoder>
-			<charset>UTF-8</charset>
-			<pattern>%d %-5level [%file:%line] %replace(%msg){'\r|\n', ' '}%n</pattern>
-		</encoder>
-	</appender>
-	
-	<appender name="ADMIN_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>/cafeGo/log/admin/error/admin_error.%d{yyyy-MM-dd}.log</fileNamePattern>
-			<maxHistory>180</maxHistory>
-		</rollingPolicy>
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>ERROR</level>
-		</filter>
-		<encoder>
-			<charset>UTF-8</charset>
-    		<pattern>%d %-5level %caller{1} %replace(%message){'\r|\n', ' '}%n</pattern>
-		</encoder>
-	</appender>
 
 	<appender name="KAKAO" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -79,8 +55,6 @@
 			<pattern>%d %-5level [%file:%line] %replace(%msg){'\r|\n', ' '}%n</pattern>
 		</encoder>
 	</appender>
-	
-	
 	
 
 	<appender name="POS" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -134,9 +108,9 @@
 	</root>
 	
 	<!-- API -->
-	<logger name="API" level="DEBUG" additivity="false">
-		<appender-ref ref="API" />
-		<appender-ref ref="API_ERROR" />
+	<logger name="INFO" level="DEBUG" additivity="false">
+		<appender-ref ref="INFO" />
+		<appender-ref ref="ERROR" />
 	</logger>
 	
 	<!-- KAKAO GATEWAY 구간 -->
