@@ -6,9 +6,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import co.kr.cafego.api.member.dto.MemberInfoDto;
+import co.kr.cafego.common.exception.ApiException;
+import co.kr.cafego.common.util.DataCode;
+import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.core.config.SystemEnviroment;
+import co.kr.cafego.core.support.MemberCheck;
 
 
 public class ApiAuthInterceptor extends HandlerInterceptorAdapter {
@@ -24,20 +30,12 @@ public class ApiAuthInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		//======================================================================================
-		// 1. 서버 작업 여부 체크 => Y 이면 모든 전문은 응답코드 010 처리 
-		//======================================================================================
-//		String serverWorking = env.getProperty("server.work","N");
-//		if("Y".equals(serverWorking)) {
-//			throw new ApiAuthException(ResultCode.SERVER_WORKING, "서버 작업 중 입니다.");
-//		}
-		
-		//======================================================================================
 		// 2. Request Method 체크 => EXT 인터페이스는 모두 POST, GET, PATCH, DELETE 메소드만 사용
 		//======================================================================================
 
-//		if(isRequiredMethod(request)) {
-//			throw new ApiAuthException(ResultCode.INVALID_METHOD, "전문요청 메소드는 POST, GET, PATCH, DELETE 방식만 지원합니다.");
-//		}
+		if(isRequiredMethod(request)) {
+			throw new ApiException(ResultCode.INVALID_METHOD, "전문요청 메소드는 POST, GET, PATCH, DELETE 방식만 지원합니다.");
+		}
 
 		//======================================================================================
 		// 3. Protocol 체크 => APP 인터페이스는 모두 HTTPS 프로토콜을 사용
@@ -46,6 +44,18 @@ public class ApiAuthInterceptor extends HandlerInterceptorAdapter {
 //		if(isRealModeAndNotSecured(request)) {
 //			throw new ApiAuthException(ResultCode.INVALID_PROTOCOL, "전문요청 프로토콜은 HTTPS만 지원합니다.");
 //		}
+		
+		MemberCheck memberCheck = ((HandlerMethod) handler).getMethodAnnotation(MemberCheck.class);
+		
+		if(memberCheck != null) {
+			MemberInfoDto memberDto = (MemberInfoDto)request.getSession().getAttribute(DataCode.MEMBER_SESSION_NAME);
+			
+			if(memberDto == null) {
+				throw new ApiException(ResultCode.NO_SESSION);
+			}else {
+				request.setAttribute("memberNum", memberDto.getMemberNum());
+			}
+		}
 		return super.preHandle(request, response, handler);
 	}
 

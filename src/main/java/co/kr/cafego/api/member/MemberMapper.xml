@@ -34,26 +34,77 @@
 	</select>
 	
 	<!-- 회원 가입 -->
-	<insert id="memberJoin" parameterType="java.util.Map">
+	<insert id="regMember" parameterType="java.util.Map">
 		<selectKey resultType="java.lang.String" keyProperty="memberNum" order="BEFORE">
-			SELECT CAFE_MEMBER_MEMBER_NUM_SEQ.nextval FROM dual
+			SELECT SEQ_MEMBER_NUM.nextval FROM dual
 		</selectKey>
-		INSERT INTO CAFE_MEMBER(
+		INSERT INTO MEMBER_INFO(
 			  member_num
 			, member_name
 			, member_sex
 			, member_phone
 			, member_email
 			, member_status
+			, join_flag
+			<if test="dbPwd != null and dbPwd != ''">
+			, member_pwd
+			</if>
 		)
 		VALUES(
 			  #{memberNum}
 			, #{memberName}
 			, #{memberSex}
-			, #{phone}
-			, #{email}
-			, 'O' 
+			, #{memberPhone}
+			, #{memberEmail}
+			, #{status}
+			, #{joinFlag}
+			<if test="dbPwd != null and dbPwd != ''">
+			, #{dbPwd}
+			</if>
 		)
 	</insert>
+	
+	<!-- 중복 카드 조회 -->
+	<select id="memberCardDupCheck" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		  FROM MEMBER_CARD_INFO
+		 WHERE CARD_NUM = #{cardNum} 
+	</select>
+	
+	<!-- 회원 카드 등록 -->
+	<insert id="regMemberPointInfo" parameterType="java.util.Map">
+		INSERT INTO MEMBER_POINT(
+				member_num
+			  , point
+		)
+		VALUES(
+				#{memberNum}
+			  , #{pointAmt}
+		)
+	</insert>
+	
+	<!-- 회원 Email로 정보 조회 -->
+	<select id="getMemberInfoByEmail" parameterType="java.util.Map" resultType="co.kr.cafego.api.member.dto.MemberInfoDto">
+		SELECT member_num    as memberNum
+			 , member_name   as memberName
+			 , member_sex    as memberSex
+			 , member_phone  as memberPhone
+			 , member_email  as memberEmail
+			 , join_flag     as joinFlag
+			 , member_status as status
+			 , member_pwd 	 as memberPwd
+			 , fail_cnt		 as failCnt
+		  FROM MEMBER_INFO 
+		 WHERE MEMBER_EMAIL = #{memberEmail}
+		   AND JOIN_FLAG    = #{joinFlag}
+	</select>
+	
+	<!-- 회원 로그인 실패 CNT 업데이트 -->
+	<update id="updateFailCnt" parameterType="java.util.Map">
+		UPDATE MEMBER_INFO
+		   SET FAIL_CNT = FAIL_CNT +1
+		 WHERE MEMBER_EMAIL = #{memberEmail}
+		   AND JOIN_FLAG	= #{joinFlag}  
+	</update>
 	
 </mapper>

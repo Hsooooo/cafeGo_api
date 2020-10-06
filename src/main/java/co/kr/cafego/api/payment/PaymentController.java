@@ -22,6 +22,7 @@ import co.kr.cafego.common.exception.ApiException;
 import co.kr.cafego.common.util.ResultCode;
 import co.kr.cafego.common.util.ReturnObject;
 import co.kr.cafego.core.support.ApiSupport;
+import co.kr.cafego.core.support.MemberCheck;
 
 /**
  * 6. 결제
@@ -50,7 +51,7 @@ public class PaymentController extends ApiSupport {
 	 * @param headers
 	 * @param request
 	 * @param response
-	/ * @param model
+	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value="/paymentList.do", method=RequestMethod.POST)
@@ -75,6 +76,7 @@ public class PaymentController extends ApiSupport {
 	 * @param model
 	 * @return
 	 */
+	@MemberCheck
 	@RequestMapping(value="/payNOrder.do", method=RequestMethod.POST)
 	public Object payNOrder(@RequestHeader HttpHeaders headers, HttpServletRequest request
 			, HttpServletResponse response, Model model) {
@@ -86,7 +88,7 @@ public class PaymentController extends ApiSupport {
 		Map<String, Object> parameters = (Map<String, Object>) request.getAttribute("bodyMap");
 		
 		try {
-			String memberNum  = (String) parameters.get("memberNum");
+			String memberNum  = (String) request.getAttribute("memberNum");
 			String totalAmt	  = (String) parameters.get("totalAmt");
 			String cartName	  = (String) parameters.get("cartName");
 			String cartNo	  = (String) parameters.get("cartNo");
@@ -97,12 +99,21 @@ public class PaymentController extends ApiSupport {
 			
 			if(StringUtils.isBlank(memberNum) || StringUtils.isBlank(totalAmt) || StringUtils.isBlank(cartName)
 					|| StringUtils.isBlank(cartNo) || StringUtils.isBlank(payMethod) || StringUtils.isBlank(pointUseYn)) {
-				throw new ApiException("필수 파라미터 NULL", ResultCode.INVALID_PARAMETER);
+				throw new ApiException(ResultCode.INVALID_PARAMETER, "필수 파라미터 NULL");
+			}
+			if(!StringUtils.isNumeric(totalAmt)) {
+				throw new ApiException(ResultCode.INVALID_PARAMETER, "파라미터 형식이 맞지않음");
 			}
 			
 			if(StringUtils.equals(pointUseYn, "Y")) {
 				if(StringUtils.isBlank(pointAmt)) {
-					throw new ApiException("필수 파라미터 NULL", ResultCode.INVALID_PARAMETER);
+					throw new ApiException(ResultCode.INVALID_PARAMETER, "필수 파라미터 NULL");
+				}
+				if(!StringUtils.isNumeric(pointAmt)) {
+					throw new ApiException(ResultCode.INVALID_PARAMETER, "파라미터 형식이 맞지않음");
+				}
+				if(Integer.parseInt(totalAmt) < Integer.parseInt(pointAmt)) {
+					throw new ApiException(ResultCode.INVALID_PARAMETER, "지불 총액의 합이 포인트 사용액수보다 작음");
 				}
 			}
 			
@@ -124,7 +135,7 @@ public class PaymentController extends ApiSupport {
 			ro.setResult(response, ae.getResultCode());
 		}catch(Exception e) {
 			logger.error("Exception" , e);
-			ro.setResult(response, "0099");
+			ro.setResult(response, ResultCode.SERVER_ERROR);
 		}
 		
 		return obj;
