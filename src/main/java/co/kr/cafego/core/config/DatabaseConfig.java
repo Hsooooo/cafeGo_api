@@ -54,7 +54,7 @@ public class DatabaseConfig{
 	public DataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-		dataSource.setUrl("jdbc:oracle:thin:@211.47.118.87:1522:XE");
+		dataSource.setUrl("jdbc:oracle:thin:@3.35.217.74:1521:XE");
 		dataSource.setUsername("cafego");
 		dataSource.setPassword("cafego");
 		
