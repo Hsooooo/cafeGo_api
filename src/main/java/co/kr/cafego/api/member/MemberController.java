@@ -154,6 +154,8 @@ public class MemberController extends ApiSupport {
 		
 		}catch(ApiException ae) {
 			
+		}catch(Exception e) {
+			logger.error("EXception", e);
 		}
 		return obj;
 		

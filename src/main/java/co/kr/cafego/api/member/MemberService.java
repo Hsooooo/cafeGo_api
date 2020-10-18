@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.kr.cafego.api.card.CardMapper;
 import co.kr.cafego.api.member.dto.MemberInfoDto;
 import co.kr.cafego.api.member.dto.MemberPointInfoDto;
 import co.kr.cafego.api.member.model.MemberBasicInfoModel;
@@ -36,6 +37,9 @@ public class MemberService extends ApiSupport{
 	
 	@Autowired
 	private PaymentMapper paymentMapper;
+	
+	@Autowired
+	private CardMapper cardMapper;
 	
 	/**
 	 * 1.1. 회원 가입(일반 회원가입)
@@ -96,6 +100,8 @@ public class MemberService extends ApiSupport{
 			}
 		}catch(ApiException ae) {
 			throw ae;
+		}catch(SQLException se) {
+			throw se;
 		}catch(Exception e) {
 			throw e;
 		}
@@ -159,9 +165,10 @@ public class MemberService extends ApiSupport{
 	 * 1.1. 회원 가입(일반 회원가입)
 	 * @param paramMap
 	 * @return
+	 * @throws SQLException 
 	 */
 	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class})
-	public Object memberJoin(Map<String, String> paramMap) {
+	public Object memberJoin(Map<String, String> paramMap) throws SQLException {
 		MemberBasicInfoModel model = new MemberBasicInfoModel();
 		//Controller에서 전달된 값 변수 저장
 		String memberName = paramMap.get("memberName");
@@ -225,6 +232,9 @@ public class MemberService extends ApiSupport{
 		}catch(ApiException ae) {
 			logger.error(ae.getMessage());
 			throw ae;		// throw 하게되면 상단(Controller)에서도 Exception 처리를 하겠다 라는 의미
+		}catch(SQLException se) {
+			logger.error(se.getMessage());
+			throw se;		// throw 하게되면 상단(Controller)에서도 Exception 처리를 하겠다 라는 의미
 		}catch(Exception e) {
 			throw e;
 		}
@@ -232,7 +242,7 @@ public class MemberService extends ApiSupport{
 	}
 	
 	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class, SQLException.class})
-	public Object memberCardReg(Map<String, String> paramMap) {
+	public Object memberCardReg(Map<String, String> paramMap) throws SQLException {
 		Map<String, Object> dbMap = new HashMap<String, Object>();
 		try {
 			String memberNum = paramMap.get("memberNum");
@@ -241,14 +251,18 @@ public class MemberService extends ApiSupport{
 			String cardNum = "";
 			
 			while(cardDup) {
-				String tmpCardNum = AppFunction.getMemberCardNum();
-				dbMap.put("cardNum", tmpCardNum);
+				
+				String nowDay = DateTime.getCurrentDate(14);
+				String cardSeq = cardMapper.getCardSeq();
+				
+				cardNum = nowDay + memberNum + cardSeq;
+				dbMap.put("cardNum", cardNum);
+				dbMap.put("memberNum", memberNum);
 				int dupCnt = memberMapper.memberCardDupCheck(dbMap);
 				
 				if(dupCnt == 0) {
 					cardDup = false;
-					cardNum = tmpCardNum;
-					dbMap.put("memberNum", memberNum);
+					cardNum = nowDay + memberNum + cardSeq;
 					dbMap.put("cardNum",   cardNum);
 					dbMap.put("amount",    0);
 					dbMap.put("status",    "00");
@@ -256,6 +270,9 @@ public class MemberService extends ApiSupport{
 					int regCnt = memberMapper.regMemberCard(dbMap);
 				}
 			}
+		}catch(SQLException se) {
+			logger.error(se.getMessage());
+			throw se;		// throw 하게되면 상단(Controller)에서도 Exception 처리를 하겠다 라는 의미
 		}catch(ApiException ae) {
 			
 		}
