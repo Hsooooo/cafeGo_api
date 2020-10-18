@@ -1,5 +1,6 @@
 package co.kr.cafego.api.member;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 import co.kr.cafego.api.member.dto.MemberInfoDto;
@@ -12,54 +13,54 @@ public interface MemberMapper {
 	 * @param dbMap
 	 * @return
 	 */
-	public MemberPointInfoDto getMemberPointInfo(Map<String, Object> dbMap);
+	public MemberPointInfoDto getMemberPointInfo(Map<String, Object> dbMap) throws SQLException;
 	
 	/**
 	 * 회원 가입
 	 * @param dbMap
 	 * @return
 	 */
-	public int memberJoin(Map<String, Object> dbMap);
+	public int memberJoin(Map<String, Object> dbMap) throws SQLException;
 	
 	/**
 	 * 중복 카드 체크
 	 * @param dbMap
 	 * @return
 	 */
-	public int memberCardDupCheck(Map<String, Object> dbMap);
+	public int memberCardDupCheck(Map<String, Object> dbMap) throws SQLException;
 
 	/**
 	 * 회원 카드 등록
 	 * @param dbMap
 	 * @return
 	 */
-	public int regMemberCard(Map<String, Object> dbMap);
+	public int regMemberCard(Map<String, Object> dbMap) throws SQLException;
 
 	/**
 	 * 회원 가입
 	 * @param dbMap
 	 * @return
 	 */
-	public int regMember(Map<String, Object> dbMap);
+	public int regMember(Map<String, Object> dbMap) throws SQLException;
 	
 	/**
 	 * 회원 포인트 정보 등록
 	 * @param dbMap
 	 * @return
 	 */
-	public int regMemberPointInfo(Map<String, Object> dbMap);
+	public int regMemberPointInfo(Map<String, Object> dbMap) throws SQLException;
 	
 	/**
 	 * 회원 Email로 정보 조회
 	 * @param dbMap
 	 * @return
 	 */
-	public MemberInfoDto getMemberInfoByEmail(Map<String, Object> dbMap);
+	public MemberInfoDto getMemberInfoByEmail(Map<String, Object> dbMap) throws SQLException;
 
 	/**
 	 * 로그인 실패 카운트 업데이트
 	 * @param dbMap
 	 * @return
 	 */
-	public int updateFailCnt(Map<String, Object> dbMap);
+	public int updateFailCnt(Map<String, Object> dbMap) throws SQLException;
 }
