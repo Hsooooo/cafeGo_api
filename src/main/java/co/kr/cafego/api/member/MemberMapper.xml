@@ -69,6 +69,7 @@
 		SELECT COUNT(*)
 		  FROM MEMBER_CARD_INFO
 		 WHERE CARD_NUM = #{cardNum} 
+		   AND MEMBER_NUM = #{memberNum}
 	</select>
 	
 	<!-- 회원 카드 등록 -->
@@ -107,4 +108,21 @@
 		   AND JOIN_FLAG	= #{joinFlag}  
 	</update>
 	
+	
+	<insert id="regMemberCard" parameterType="java.util.Map">
+		INSERT INTO MEMBER_CARD_INFO(
+				member_num
+			  , card_num
+			  , amount
+			  , status
+			  , reg_date
+		)
+		VALUES(
+				#{memberNum}
+			  , #{cardNum}
+			  , 0
+			  , #{status}
+			  , SYSDATE
+		)
+	</insert>
 </mapper>
