@@ -49,7 +49,7 @@ public class MemberService extends ApiSupport{
 	@Transactional(value="transactionManager", rollbackFor= {Exception.class, ApiException.class, SQLException.class})
 	public Object emailJoin(Map<String, String> paramMap) throws Exception{
 		Map<String, Object> dbMap = new HashMap<String, Object>();
-		
+		//pp
 		String memberName  = paramMap.get("memberName");
 		String memberSex   = paramMap.get("memberSex");
 		String memberPhone = paramMap.get("memberPhone");
